@@ -33,13 +33,15 @@ class Subcategory(models.Model):
 # Place Model
 class Place(models.Model):
     title = models.CharField('Pavadinimas', max_length=200)
-    coordinates = models.IntegerField('Koordinatės', null=True, blank=True)
+    address = models.CharField("Adresas", max_length=200, null=True, blank=True)
+    latitude = models.FloatField("Platuma", null=True, blank=True)
+    longitude = models.FloatField("Ilguma",null=True, blank=True)
     description = models.TextField('Apie', max_length=3000)
     working_hours = models.CharField('Darbo valandos', max_length=255, null=True, blank=True)
     tel = models.CharField('Telefono numeris', max_length=20)
     website = models.URLField('Svetainė', max_length=200, null=True, blank=True)
     subcategories = models.ManyToManyField(Subcategory, related_name='places', help_text='Priskirkite subkategorijas')
-    favourited_by = models.ManyToManyField(User, related_name='favourite_places')
+    favourited_by = models.ManyToManyField(User, related_name='favourite_places', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -132,6 +134,9 @@ class TicketInstance(models.Model):
         choices=STATUS,
         default='G',
     )
+
+    class Meta:
+        ordering = ['due_to']
 
     def __str__(self):
         return f"Individual ticket {self.uuid} for {self.ticket_order}"
