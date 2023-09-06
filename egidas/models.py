@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from tinymce.models import HTMLField
 import uuid
 
 
@@ -34,11 +35,12 @@ class Place(models.Model):
     address = models.CharField("Adresas", max_length=200, null=True, blank=True)
     latitude = models.FloatField("Platuma", null=True, blank=True)
     longitude = models.FloatField("Ilguma",null=True, blank=True)
-    description = models.TextField('Apie', max_length=3000)
+    description = HTMLField("Apie")
     working_hours = models.CharField('Darbo valandos', max_length=255, null=True, blank=True)
     tel = models.CharField('Telefono numeris', max_length=20)
     website = models.URLField('Svetainė', max_length=200, null=True, blank=True)
     subcategories = models.ManyToManyField(Subcategory, related_name='places', help_text='Priskirkite subkategorijas')
+    cover = models.ImageField("Nuotrauka", upload_to="covers", null=True)
     # favourited_by = models.ManyToManyField(User, related_name='favourite_places')
 
     def __str__(self):
