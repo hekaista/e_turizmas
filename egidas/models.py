@@ -5,7 +5,6 @@ from django.db import models
 import uuid
 
 
-# Category Model
 class Category(models.Model):
     name = models.CharField('Kategorija', max_length=255)
 
@@ -17,7 +16,6 @@ class Category(models.Model):
         verbose_name_plural = 'Kategorijos'
 
 
-# Subcategory Model
 class Subcategory(models.Model):
     name = models.CharField('Subkategorija', max_length=255)
     category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
@@ -41,7 +39,7 @@ class Place(models.Model):
     tel = models.CharField('Telefono numeris', max_length=20)
     website = models.URLField('Svetainė', max_length=200, null=True, blank=True)
     subcategories = models.ManyToManyField(Subcategory, related_name='places', help_text='Priskirkite subkategorijas')
-    favourited_by = models.ManyToManyField(User, related_name='favourite_places', null=True, blank=True)
+    # favourited_by = models.ManyToManyField(User, related_name='favourite_places')
 
     def __str__(self):
         return self.title
@@ -51,7 +49,6 @@ class Place(models.Model):
         verbose_name_plural = 'Objektai'
 
 
-# Review Model
 class Review(models.Model):
     user = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
     place = models.ForeignKey(Place, related_name='reviews', on_delete=models.CASCADE)
@@ -116,6 +113,10 @@ class TicketOrder(models.Model):
     def __str__(self):
         return f"{self.user} bilietas: {self.ticket}"
 
+    class Meta:
+        ordering = ['purchase_date']
+        verbose_name = 'Bilieto užsalymas'
+        verbose_name_plural = 'Bilietų užsakymai'
 
 class TicketInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -137,6 +138,8 @@ class TicketInstance(models.Model):
 
     class Meta:
         ordering = ['due_to']
+        verbose_name = 'BBilieto egzempliorius'
+        verbose_name_plural = 'Bilietų egzemplioriai'
 
     def __str__(self):
         return f"Individual ticket {self.uuid} for {self.ticket_order}"
