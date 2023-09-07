@@ -34,13 +34,14 @@ class Place(models.Model):
     title = models.CharField('Pavadinimas', max_length=200)
     address = models.CharField("Adresas", max_length=200, null=True, blank=True)
     latitude = models.FloatField("Platuma", null=True, blank=True)
-    longitude = models.FloatField("Ilguma",null=True, blank=True)
+    longitude = models.FloatField("Ilguma", null=True, blank=True)
     description = HTMLField("Apie")
     working_hours = models.CharField('Darbo valandos', max_length=255, null=True, blank=True)
     tel = models.CharField('Telefono numeris', max_length=20)
     website = models.URLField('Svetainė', max_length=200, null=True, blank=True)
     subcategories = models.ManyToManyField(Subcategory, related_name='places', help_text='Priskirkite subkategorijas')
     cover = models.ImageField("Nuotrauka", upload_to="covers", null=True)
+
     # favourited_by = models.ManyToManyField(User, related_name='favourite_places')
 
     def __str__(self):
@@ -81,16 +82,18 @@ class Favourite(models.Model):
 class Ticket(models.Model):
     place = models.ForeignKey(Place, related_name='tickets', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=9, decimal_places=2)
-
+    service = models.CharField('Paslaugos pavadinimas', max_length=255, null=True, blank=True)
     TYPE = (
         ('S', 'Suaugusiems'),
         ('V', 'Vaikams'),
         ('N', 'Neįgaliems ir pencininkams'),
-        ('B', 'Bendrinis')
+        ('B', 'Bendrinis'),
+        ('N', 'Anykštėnams'),
+        ('M', 'Moksleiviams ir studentams')
     )
 
     type = models.CharField(
-        max_length=1,
+        max_length=4,
         choices=TYPE,
         blank=True,
         default='B',
@@ -98,7 +101,7 @@ class Ticket(models.Model):
     )
 
     def __str__(self):
-        return f"Bilietas {self.ticket_type} į {self.place.title}"
+        return f"Bilietas {self.type} į {self.place.title}, {self.price}"
 
     class Meta:
         verbose_name = 'Bilietas'
@@ -120,9 +123,10 @@ class TicketOrder(models.Model):
         verbose_name = 'Bilieto užsalymas'
         verbose_name_plural = 'Bilietų užsakymai'
 
+
 class TicketInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    ticket_order = models.ForeignKey(TicketOrder, related_name='ticket_Instances', on_delete=models.CASCADE)
+    ticket = models.ForeignKey(Ticket, related_name='ticket_Instances', on_delete=models.CASCADE, null=True, blank=True)
     due_to = models.DateTimeField('Galojimas iki', null=True, blank=True)
 
     STATUS = [

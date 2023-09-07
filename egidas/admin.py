@@ -52,20 +52,20 @@ class FavouriteAdmin(admin.ModelAdmin):
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ['place', 'price', 'type']
-    list_filter = ['place', 'type']
-    search_fields = ['place__title']
+    list_display = ('place', 'price', 'service', 'type')
+    list_filter = ('place', 'type')
+    search_fields = ('place__title',)
 
 
 @admin.register(TicketOrder)
 class TicketOrderAdmin(admin.ModelAdmin):
-    list_display = ['user', 'ticket', 'quantity', 'purchase_date']
-    list_filter = ['purchase_date']
-    search_fields = ['user__username', 'ticket__place__title']
+    list_display = ('user', 'ticket', 'quantity', 'purchase_date')
+    list_filter = ('purchase_date',)
+    search_fields = ('user__username', 'ticket__place__title')
 
 
 @admin.register(TicketInstance)
 class TicketInstanceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'ticket_order', 'due_to', 'status']
-    list_filter = ['status']
-    search_fields = ['id', 'ticket_order__ticket__place__title']
+    list_display = ('id', 'ticket', 'due_to', 'status')
+    list_filter = ('status',)
+    search_fields = ('id', 'ticket_order__ticket__place__title')
