@@ -56,12 +56,16 @@ class TicketAdmin(admin.ModelAdmin):
     list_filter = ('place', 'type')
     search_fields = ('place__title',)
 
+class TicketInstanceInline(admin.TabularInline):
+    model = TicketInstance
+    extra = 1
 
 @admin.register(TicketOrder)
 class TicketOrderAdmin(admin.ModelAdmin):
-    list_display = ('user', 'ticket', 'quantity', 'purchase_date')
+    list_display = ('id', 'user', 'purchase_date')
     list_filter = ('purchase_date',)
     search_fields = ('user__username', 'ticket__place__title')
+    inlines = [TicketInstanceInline]
 
 
 @admin.register(TicketInstance)

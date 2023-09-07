@@ -4,7 +4,7 @@ from django.db import models
 
 from tinymce.models import HTMLField
 import uuid
-
+from datetime import datetime, date, timedelta
 
 class Category(models.Model):
     name = models.CharField('Kategorija', max_length=255)
@@ -84,19 +84,19 @@ class Ticket(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2)
     service = models.CharField('Paslaugos pavadinimas', max_length=255, null=True, blank=True)
     TYPE = (
-        ('S', 'Suaugusiems'),
-        ('V', 'Vaikams'),
-        ('N', 'Neįgaliems ir pencininkams'),
-        ('B', 'Bendrinis'),
-        ('N', 'Anykštėnams'),
-        ('M', 'Moksleiviams ir studentams')
+        ('Suaugusiam', 'Suaugusiems'),
+        ('Vaikams', 'Vaikams'),
+        ('Pens/Neįg', 'Neįgaliems ir pencininkams'),
+        ('Bendrinis', 'Bendrinis'),
+        ('Anykštėnui', 'Anykštėnams'),
+        ('Stud/Moksl', 'Moksleiviams ir studentams')
     )
 
     type = models.CharField(
-        max_length=4,
+        max_length=50,
         choices=TYPE,
         blank=True,
-        default='B',
+        default='Bendrinis',
         help_text='Bilieto tipas'
     )
 
@@ -109,14 +109,14 @@ class Ticket(models.Model):
 
 
 class TicketOrder(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, related_name='ticket_purchases', on_delete=models.CASCADE)
-    ticket = models.ForeignKey(Ticket, related_name='purchases', on_delete=models.CASCADE)
-    quantity = models.IntegerField('Kiekis')
+    #ticket = models.ForeignKey(Ticket, related_name='purchases', on_delete=models.CASCADE)
     purchase_date = models.DateTimeField('Pirkimo data', auto_now_add=True)
-    total = models.IntegerField('Galioja iki', null=True, blank=True)
+    total = models.IntegerField('Suma viso:', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user} bilietas: {self.ticket}"
+        return f"{self.id} {self.user}"
 
     class Meta:
         ordering = ['purchase_date']
@@ -126,8 +126,10 @@ class TicketOrder(models.Model):
 
 class TicketInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    order = models.ForeignKey(TicketOrder, related_name='ticket_Instances', on_delete=models.CASCADE,null=True, blank=True)
     ticket = models.ForeignKey(Ticket, related_name='ticket_Instances', on_delete=models.CASCADE, null=True, blank=True)
-    due_to = models.DateTimeField('Galojimas iki', null=True, blank=True)
+    quantity = models.IntegerField('Kiekis', null=True, blank=True)
+    due_to = models.DateTimeField('Galojimas iki', default=datetime.now() + timedelta(days=365), null=True, blank=True)
 
     STATUS = [
         ('G', 'Galiojantis'),
@@ -142,10 +144,22 @@ class TicketInstance(models.Model):
         default='G',
     )
 
+    @property
+    def is_overdue(self):
+        if self.due_to and date.today() > self.due_to:
+            return True
+        else:
+            return False
+
+    @property
+    def eilutes_total(self):
+        return self.quantity * self.ticket.price
+
     class Meta:
+
         ordering = ['due_to']
-        verbose_name = 'BBilieto egzempliorius'
+        verbose_name = 'Bilieto egzempliorius'
         verbose_name_plural = 'Bilietų egzemplioriai'
 
     def __str__(self):
-        return f"Individual ticket {self.uuid} for {self.ticket_order}"
+        return f"Ūnikalus bilietas {self.id} į {self.ticket.place}, {self.ticket.service}"
