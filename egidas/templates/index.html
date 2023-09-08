@@ -2,14 +2,30 @@
 
 {% block content %}
 
-<h1><strong>Sveiki atvykę į Anykščius!</strong></h1>
-<br>
-<h4>Kur keliausime šiandien? </h4>
-<hr/>
-<p>Užregistruota įstaigų: {{ num_places }}</p>
-<p>Palikta atsiliepimų: {{ num_reviews }}</p>
-<p>Bilietus įsigijo kartų: {{ num_orders }} </p>
-<p>Bilietų rušių: {{ num_tickets }}</p>
+<div class="container">
+    <h1 class="index-title"><strong>{{ username|capfirst }}, sveiki atvykę į Anykščius!</strong></h1>
+    <h4 class="index-subtitle">Pulsapyje lankotės {{ num_visits }} kartą</h4>
+    <hr/>
+    <h4 class="index-subtitle">Kur keliausime šiandien?</h4>
+
+    <div class="stats-box">
+        <div class="stat-item">
+            <h5>Užregistruota įstaigų:</h5>
+            <p>{{ num_places }}</p>
+        </div>
+        <div class="stat-item">
+            <h5>Palikta atsiliepimų:</h5>
+            <p>{{ num_reviews }}</p>
+        </div>
+        <div class="stat-item">
+            <h5>Bilietus įsigijo kartų:</h5>
+            <p>{{ num_orders }}</p>
+        </div>
+        <div class="stat-item">
+            <h5>Bilietų rušių:</h5>
+            <p>{{ num_tickets }}</p>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
-

@@ -40,3 +40,77 @@ footer {
 .my-top-shadow {
   box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* Add to your styles.css */
+.index-title {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.index-subtitle {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.stats-box {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    flex: 0 1 calc(25% - 1em);
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+    .stat-item {
+        flex: 0 1 calc(50% - 1em);
+    }
+}
+
+.subcategory-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* adjust as needed */
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 10px; /* adjust as needed */
+    background-color: #f2f2f2; /* adjust as needed */
+    border: none;
+    cursor: pointer;
+}
+
+.btn-active {
+    background-color: #4CAF50; /* adjust as needed */
+    color: white;
+
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #4691f6;
+}
+
+.svg-icon circle {
+  stroke: #4691f6;
+  stroke-width: 1;
+}

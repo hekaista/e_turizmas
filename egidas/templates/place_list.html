@@ -5,17 +5,32 @@
     <h1>Objektų sąrašas:</h1>
     <div class="container mt-5">
 
-        <!-- Kategorijų atvaizdavimas filtravimui -->
         <div class="mb-3">
             <label for="categoryFilter"><strong>Filtruoti pagal kategoriją:</strong></label>
             <select id="categoryFilter" onchange="location = this.value;">
                 <option value="{% url 'place-list' %}">Visi objektai</option>
                 {% for category in categories %}
-                    <option value="{% url 'place-list' %}?category={{ category.name }}" {% if request.GET.category == category.name %} selected {% endif %}>
-                        {{ category.name }}
-                    </option>
+                <option value="{% url 'place-list' %}?category={{ category.name }}"
+                        {% if request.GET.category == category.name %} selected {% endif %}>
+                    {{ category.name }}
+                </option>
                 {% endfor %}
             </select>
+            <hr/>
+            {% if subcategories %}
+            <!-- Sąliginis atvaizdavimas -->
+            <label><strong>Filtruoti pagal subkategoriją:</strong></label>
+            <div class="subcategory-row text-center">
+                <a href="{% url 'place-list' %}?category={{ request.GET.category }}"
+                   class="btn {% if not request.GET.subcategory %}btn-active{% endif %}">Visi objektai</a>
+                {% for subcategory in subcategories %}
+                <a href="{% url 'place-list' %}?category={{ request.GET.category }}&subcategory={{ subcategory.name }}"
+                   class="btn {% if request.GET.subcategory == subcategory.name %}btn-active{% endif %}">
+                    {{ subcategory.name }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
 
         <!-- puslapiavimas -->
@@ -23,54 +38,60 @@
             <ul class="pagination justify-content-center">
                 <!-- Previous Page Link -->
                 {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="First">
-                            <span aria-hidden="true">&laquo;&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page=1{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
                 {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;&laquo;</span>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo;</span>
-                    </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;&laquo;</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
                 {% endif %}
-
-                <!-- Dabartinis puslapis -->
+                <!-- Current Page -->
                 <li class="page-item disabled">
                     <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
                 </li>
-
-                <!-- Sekantis puslapis -->
+                <!-- Next Page Link -->
                 {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="Last">
-                            <span aria-hidden="true">&raquo;&raquo;</span>
-                        </a>
-                    </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
                 {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;</span>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">&raquo;&raquo;</span>
-                    </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;&raquo;</span>
+                </li>
                 {% endif %}
             </ul>
         </nav>
 
-        <!-- Objektų sąrašas su nuotraukomis -->
+        <!-- Object List with Pictures -->
         {% if place_list %}
         <div class="row">
             {% for place in place_list %}
@@ -90,7 +111,9 @@
             {% endfor %}
         </div>
         {% else %}
-        <p>Šiuo metu lankytinų objektų nėra</p>
+        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+            <p>Netrukus čia atsiras puikių naujų vietų. Užsukite vėliau!</p>
+        </div>
         {% endif %}
     </div>
 </div>

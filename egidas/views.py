@@ -24,12 +24,20 @@ def index(request):
     num_order_items = OrderItem.objects.all().count()
     num_tickets = Ticket.objects.all().count()
 
+    username = request.user
+
+    # kaupiam apsilankymų skaičių
+    num_visits = request.session.get('num_visits', 1)
+    request.session['num_visits'] = num_visits + 1
+
     context = {
         'num_places': num_places,
         'num_reviews': num_reviews,
         'num_orders': num_orders,
         'num_order_items': num_order_items,
         'num_tickets': num_tickets,
+        'username': username,
+        'num_visits': num_visits
     }
 
     return render(request, 'index.html', context=context)
@@ -58,17 +66,36 @@ class PlaceListView(generic.ListView):
 
     def get_queryset(self):
         category_name = self.request.GET.get('category', None)
+        subcategory_name = self.request.GET.get('subcategory', None)
+
+        queryset = Place.objects.all()
 
         if category_name:
-            queryset = Place.objects.filter(subcategories__category__name=category_name).distinct()
-        else:
-            queryset = Place.objects.all()
+            queryset = queryset.filter(subcategories__category__name=category_name)
 
-        return queryset
+        if subcategory_name:
+            queryset = queryset.filter(subcategories__name=subcategory_name)
+
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+
+        category_name = self.request.GET.get('category', None)
+        subcategory_name = self.request.GET.get('subcategory', None)
+
+        if subcategory_name:
+            try:
+                subcategory = Subcategory.objects.get(name=subcategory_name)
+                category_name = subcategory.category.name
+            except Subcategory.DoesNotExist:
+                pass
+
+        if category_name:
+            subcategories = Subcategory.objects.filter(category__name=category_name)
+            context['subcategories'] = subcategories
+
         return context
 
 
