@@ -6,6 +6,7 @@ from tinymce.models import HTMLField
 import uuid
 from datetime import datetime, date, timedelta
 
+
 class Category(models.Model):
     name = models.CharField('Kategorija', max_length=255)
 
@@ -108,27 +109,34 @@ class Ticket(models.Model):
         verbose_name_plural = 'Bilietai'
 
 
-class TicketOrder(models.Model):
+# class TicketCopy(models.Model):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+#     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+
+
+class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, related_name='ticket_purchases', on_delete=models.CASCADE)
-    #ticket = models.ForeignKey(Ticket, related_name='purchases', on_delete=models.CASCADE)
     purchase_date = models.DateTimeField('Pirkimo data', auto_now_add=True)
-    total = models.IntegerField('Suma viso:', null=True, blank=True)
+    user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
+    items = models.ForeignKey("OrderItem", related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
+    # total = models.IntegerField('Suma viso:', null=True, blank=True)
+
 
     def __str__(self):
         return f"{self.id} {self.user}"
 
     class Meta:
         ordering = ['purchase_date']
-        verbose_name = 'Bilieto užsalymas'
-        verbose_name_plural = 'Bilietų užsakymai'
+        verbose_name = 'Užsalymas'
+        verbose_name_plural = 'užsakymai'
 
 
-class TicketInstance(models.Model):
+class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    order = models.ForeignKey(TicketOrder, related_name='ticket_Instances', on_delete=models.CASCADE,null=True, blank=True)
-    ticket = models.ForeignKey(Ticket, related_name='ticket_Instances', on_delete=models.CASCADE, null=True, blank=True)
-    quantity = models.IntegerField('Kiekis', null=True, blank=True)
+    order = models.ForeignKey(Order, related_name='Order_items', on_delete=models.CASCADE, null=True, blank=True)
+    ticket = models.ForeignKey(Ticket, related_name='Order_items', on_delete=models.CASCADE, null=True,
+                               blank=True)
+    quantity = models.PositiveIntegerField("Kiekis", default=1)
     due_to = models.DateTimeField('Galojimas iki', default=datetime.now() + timedelta(days=365), null=True, blank=True)
 
     STATUS = [
@@ -158,8 +166,8 @@ class TicketInstance(models.Model):
     class Meta:
 
         ordering = ['due_to']
-        verbose_name = 'Bilieto egzempliorius'
-        verbose_name_plural = 'Bilietų egzemplioriai'
+        verbose_name = 'Užsakymo eilutė'
+        verbose_name_plural = 'Užsakymo eilutės'
 
     def __str__(self):
         return f"Ūnikalus bilietas {self.id} į {self.ticket.place}, {self.ticket.service}"

@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Category, Subcategory, Place, Review, Favourite, Ticket, TicketOrder, TicketInstance
-
+from .models import Category, Subcategory, Place, Review, Favourite, Ticket, Order, OrderItem
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -36,6 +35,38 @@ class PlaceAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
 
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('place', 'price', 'service', 'type')
+    list_filter = ('place', 'type')
+    search_fields = ('place__title',)
+
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 1
+
+
+# @admin.register(TicketCopy)
+# class TicketCopyAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'ticket')
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'purchase_date')
+    list_filter = ('purchase_date',)
+    search_fields = ('user__username', 'ticket__place__title')
+    inlines = [OrderItemInline]
+
+
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'ticket', 'due_to', 'status')
+    list_filter = ('status',)
+    search_fields = ('id',)
+
+
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('user', 'place', 'rating')
@@ -48,28 +79,3 @@ class FavouriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'place')
     list_filter = ('user', 'place', 'place__subcategories__category', 'place__subcategories__name')
     search_fields = ('user__username', 'place__subcategories__name')
-
-
-@admin.register(Ticket)
-class TicketAdmin(admin.ModelAdmin):
-    list_display = ('place', 'price', 'service', 'type')
-    list_filter = ('place', 'type')
-    search_fields = ('place__title',)
-
-class TicketInstanceInline(admin.TabularInline):
-    model = TicketInstance
-    extra = 1
-
-@admin.register(TicketOrder)
-class TicketOrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'purchase_date')
-    list_filter = ('purchase_date',)
-    search_fields = ('user__username', 'ticket__place__title')
-    inlines = [TicketInstanceInline]
-
-
-@admin.register(TicketInstance)
-class TicketInstanceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ticket', 'due_to', 'status')
-    list_filter = ('status',)
-    search_fields = ('id', 'ticket_order__ticket__place__title')
