@@ -36,18 +36,20 @@
         <!-- puslapiavimas -->
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                <!-- Previous Page Link -->
+                <!-- atgal page link -->
                 {% if page_obj.has_previous %}
                 <li class="page-item">
                     <a class="page-link"
-                       href="?page=1{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       href="?page=1{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}
+                       {% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
                        aria-label="First">
                         <span aria-hidden="true">&laquo;&laquo;</span>
                     </a>
                 </li>
                 <li class="page-item">
                     <a class="page-link"
-                       href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}
+                       {% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
                        aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
@@ -64,18 +66,20 @@
                 <li class="page-item disabled">
                     <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
                 </li>
-                <!-- Next Page Link -->
+                <!-- kitas page link -->
                 {% if page_obj.has_next %}
                 <li class="page-item">
                     <a class="page-link"
-                       href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}
+                       {% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
                        aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
                 <li class="page-item">
                     <a class="page-link"
-                       href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
+                       href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}
+                       {% if request.GET.subcategory %}&subcategory={{ request.GET.subcategory }}{% endif %}"
                        aria-label="Last">
                         <span aria-hidden="true">&raquo;&raquo;</span>
                     </a>
@@ -91,7 +95,7 @@
             </ul>
         </nav>
 
-        <!-- Object List with Pictures -->
+        <!-- objektu listas su foto -->
         {% if place_list %}
         <div class="row">
             {% for place in place_list %}
@@ -105,6 +109,14 @@
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-muted"><a href="{% url 'place-detail' place.id %}">{{ place.title }}</a></h6>
                         <p class="card-text">{{ place.address }}</p>
+                        <p class="card-text">
+                            <span style="font-size: 0.8em;">
+                                {% for subcategory in place.subcategories.all %}
+                                    {{ subcategory.name }}
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
