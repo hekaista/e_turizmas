@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Rezultatai pagal paiešką "{{ query }}":</h3>
+{% if search_results %}
+<ul>
+    {% for place in search_results %}
+    <li>{{place.title}} - {{ place.address }}</li>
+    {% endfor %}
+</ul>
+{% else  %}
+<p>Pagal Jūsų paiešką nieko nerasta...</p>
+{% endif %}
+{% endblock %}

@@ -118,9 +118,8 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     purchase_date = models.DateTimeField('Pirkimo data', auto_now_add=True)
     user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
-    items = models.ForeignKey("OrderItem", related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
+    # items = models.ForeignKey("OrderItem", related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
     # total = models.IntegerField('Suma viso:', null=True, blank=True)
-
 
     def __str__(self):
         return f"{self.id} {self.user}"
@@ -138,6 +137,7 @@ class OrderItem(models.Model):
                                blank=True)
     quantity = models.PositiveIntegerField("Kiekis", default=1)
     due_to = models.DateTimeField('Galojimas iki', default=datetime.now() + timedelta(days=365), null=True, blank=True)
+
 
     STATUS = [
         ('G', 'Galiojantis'),

@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>E-Gidas</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+
+<h1><strong>Sveiki atvykę į Anykščius!</strong></h1>
+<br>
+<h4>Kur keliausime šiandien? </h4>
+<hr/>
+<p>Užregistruota įstaigų: {{ num_places }}</p>
+<p>Palikta atsiliepimų: {{ num_reviews }}</p>
+<p>Bilietus įsigijo kartų: {{ num_orders }} </p>
+<p>Bilietų rušių: {{ num_tickets }}</p>
+
+{% endblock %}
+
