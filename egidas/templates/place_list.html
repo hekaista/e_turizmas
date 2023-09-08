@@ -7,7 +7,7 @@
 
         <!-- Kategorijų atvaizdavimas filtravimui -->
         <div class="mb-3">
-            <label for="categoryFilter">Filtruoti pagal kategoriją:</label>
+            <label for="categoryFilter"><strong>Filtruoti pagal kategoriją:</strong></label>
             <select id="categoryFilter" onchange="location = this.value;">
                 <option value="{% url 'place-list' %}">Visi objektai</option>
                 {% for category in categories %}
@@ -42,12 +42,12 @@
                     </li>
                 {% endif %}
 
-                <!-- Current Page -->
+                <!-- Dabartinis puslapis -->
                 <li class="page-item disabled">
                     <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
                 </li>
 
-                <!-- Next Page Link -->
+                <!-- Sekantis puslapis -->
                 {% if page_obj.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="Next">
@@ -82,8 +82,8 @@
                     <img src="{% static 'img/noimg.png' %}" class="card-img-top">
                     {% endif %}
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">{{ place.title }}</h6>
-                        <p class="card-text"><a>{{ place.address }}</a></p>
+                        <h6 class="card-subtitle mb-2 text-muted"><a href="{% url 'place-detail' place.id %}">{{ place.title }}</a></h6>
+                        <p class="card-text">{{ place.address }}</p>
                     </div>
                 </div>
             </div>

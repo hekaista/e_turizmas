@@ -89,7 +89,7 @@ class Ticket(models.Model):
         ('Vaikams', 'Vaikams'),
         ('Pens/Neįg', 'Neįgaliems ir pencininkams'),
         ('Bendrinis', 'Bendrinis'),
-        ('Anykštėnui', 'Anykštėnams'),
+        ('Anykštėnams', 'Anykštėnams'),
         ('Stud/Moksl', 'Moksleiviams ir studentams')
     )
 

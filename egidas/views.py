@@ -72,4 +72,9 @@ class PlaceListView(generic.ListView):
         return context
 
 
-
+#class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
+class PlaceDetailView(generic.DetailView):
+    model = Place
+    context_object_name = 'place'
+    template_name = 'place_detail.html'
+    # form_class = PlaceReviewForm

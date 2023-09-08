@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-light bg-dark">{{ place.title }}</h1>
+<h4><strong>Apie Objektą:</strong></h4>
+<p>{{ place.description | safe }}</p>
+<hr/>
+<h4><strong>Adresas:</strong></h4>
+<p>{{ place.address }}</p>
+<h4><strong>Koordinatės:</strong></h4>
+<p>{{ place.latitude }} | {{ place.longitude }}</p>
+<hr/>
+{% if place.tickets.all %}
+<h4><strong>Bilietų kainos:</strong></h4>
+<ul>
+    {% for ticket in place.tickets.all %}
+    <li><strong>{{ ticket.service }}</strong> : {{ ticket.price }} EUR /asm. - {{ ticket.type }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<hr/>
+{% if place.cover %}
+<img src="{{ place.cover.url }}" class="img-fluid" alt="{{ place.title }} cover image">
+{% endif %}
+<br>
+<hr/>
+{% endblock %}

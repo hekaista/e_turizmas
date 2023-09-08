@@ -1,4 +1,4 @@
-/* Your CSS styles here */ 
+/* Your CSS styles here */
 
 .card-img-top {
     object-fit: cover;
@@ -10,8 +10,33 @@ body {
     background-image: url('/static/img/anyksciai.jpg');
     background-size: cover;
     background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .page-link {
     background-color: #b8ddfc;
+}
+
+.responsive-image {
+    max-width: 100%;
+    height: auto;
+}
+
+footer {
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+}
+
+
+.my-top-shadow {
+  box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.1);
 }
