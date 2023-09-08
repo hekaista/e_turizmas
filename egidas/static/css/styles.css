@@ -1,1 +1,17 @@
 /* Your CSS styles here */ 
+
+.card-img-top {
+    object-fit: cover;
+    height: 200px;
+    width: 100%;
+}
+
+body {
+    background-image: url('/static/img/anyksciai.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.page-link {
+    background-color: #b8ddfc;
+}

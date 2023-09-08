@@ -8,11 +8,12 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-#from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
+# from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
 
 
 # from .models import
 from .models import *
+
 
 # Create your views here.
 
@@ -51,6 +52,24 @@ def search(request):
 
 class PlaceListView(generic.ListView):
     model = Place
+    template_name = 'place_list.html'
     context_object_name = 'place_list'
-    template_name = 'objektai.html'
     paginate_by = 8
+
+    def get_queryset(self):
+        category_name = self.request.GET.get('category', None)
+
+        if category_name:
+            queryset = Place.objects.filter(subcategories__category__name=category_name).distinct()
+        else:
+            queryset = Place.objects.all()
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
+
+
+
