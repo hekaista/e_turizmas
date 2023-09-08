@@ -2,6 +2,8 @@
 
 {% block content %}
 <h1 class="text-light bg-dark">{{ place.title }}</h1>
+<div id="map" style="height: 400px;"></div>
+<hr/>
 <h4><strong>Apie Objektą:</strong></h4>
 <p>{{ place.description | safe }}</p>
 <hr/>
@@ -24,4 +26,20 @@
 {% endif %}
 <br>
 <hr/>
+
+<script>
+    var latitude = {{ place.latitude }};
+    var longitude = {{ place.longitude }};
+
+    var map = L.map('map').setView([latitude, longitude], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.marker([latitude, longitude]).addTo(map)
+        .bindPopup('{{ place.title }}')
+        .openPopup();
+</script>
+
 {% endblock %}
