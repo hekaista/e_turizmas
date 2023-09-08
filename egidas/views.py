@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_object_or_404, redirect, reverse
 from django.views import generic
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+#from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
 
 
 # from .models import
@@ -48,3 +49,8 @@ def search(request):
     return render(request, 'search.html', context=context)
 
 
+class PlaceListView(generic.ListView):
+    model = Place
+    context_object_name = 'place_list'
+    template_name = 'objektai.html'
+    paginate_by = 8
