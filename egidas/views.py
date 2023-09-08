@@ -40,9 +40,9 @@ def search(request):
     print(request.GET)
     search_results = Place.objects.filter(
         Q(title__icontains=query) |
-        Q(description__icontains=query),
-        Q(subcategories__icontains=query)
-    )
+        Q(description__icontains=query) |
+        Q(subcategories__name__icontains=query)
+    ).distinct()
     context = {
         'query': query,
         'search_results': search_results
