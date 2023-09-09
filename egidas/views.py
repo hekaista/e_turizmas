@@ -8,10 +8,10 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+
 # from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
 
 
-# from .models import
 from .models import *
 
 
@@ -99,9 +99,11 @@ class PlaceListView(generic.ListView):
         return context
 
 
-#class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
+# class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
 class PlaceDetailView(generic.DetailView):
     model = Place
     context_object_name = 'place'
     template_name = 'place_detail.html'
     # form_class = PlaceReviewForm
+
+

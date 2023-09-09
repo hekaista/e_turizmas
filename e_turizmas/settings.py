@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'egidas',
     'tinymce',
+    'crispy_forms',
+    'crispy_bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -121,6 +123,8 @@ MEDIA_ROOT = Path.joinpath(BASE_DIR, 'egidas/media')
 MEDIA_URL = '/media/'
 # nukreipimas po prisijungimo
 LOGIN_REDIRECT_URL = '/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,
