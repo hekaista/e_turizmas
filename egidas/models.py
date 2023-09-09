@@ -4,6 +4,7 @@ from django.db import models
 
 from tinymce.models import HTMLField
 import uuid
+from PIL import Image
 from datetime import datetime, date, timedelta
 
 
@@ -118,6 +119,7 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     purchase_date = models.DateTimeField('Pirkimo data', auto_now_add=True)
     user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
+
     # items = models.ForeignKey("OrderItem", related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
     # total = models.IntegerField('Suma viso:', null=True, blank=True)
 
@@ -137,7 +139,6 @@ class OrderItem(models.Model):
                                blank=True)
     quantity = models.PositiveIntegerField("Kiekis", default=1)
     due_to = models.DateTimeField('Galojimas iki', default=datetime.now() + timedelta(days=365), null=True, blank=True)
-
 
     STATUS = [
         ('G', 'Galiojantis'),
@@ -171,3 +172,24 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"Ūnikalus bilietas {self.id} į {self.ticket.place}, {self.ticket.service}"
+
+
+class Profilis(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
+    nuotrauka = models.ImageField(default='profile_pics/pfp.png', upload_to='profile_pics')
+
+    def __str__(self):
+        return f"{self.user.username} profilis"
+
+    class Meta:
+        verbose_name = 'Profilis'
+        verbose_name_plural = 'Profiliai'
+
+    # User nuotraukos pridėjimas ir dydžio keitimas, naujojam PIL biblioteka
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        img = Image.open(self.nuotrauka.path)
+        if (img.height > 300) or (img.width > 300):
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.nuotrauka.path)

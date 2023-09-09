@@ -119,6 +119,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = Path.joinpath(BASE_DIR, 'egidas/media')
 MEDIA_URL = '/media/'
+# nukreipimas po prisijungimo
+LOGIN_REDIRECT_URL = '/'
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,

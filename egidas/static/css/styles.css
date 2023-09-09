@@ -36,12 +36,12 @@ footer {
   width: 100%;
 }
 
-
+/* footer shaddow */
 .my-top-shadow {
   box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Add to your styles.css */
+/* navigation buttonds */
 .index-title {
     text-align: center;
     font-size: 2em;
@@ -85,32 +85,17 @@ footer {
 }
 
 .btn {
-    padding: 10px; /* adjust as needed */
-    background-color: #f2f2f2; /* adjust as needed */
+    padding: 10px;
+    background-color: #f2f2f2;
     border: none;
     cursor: pointer;
 }
 
 .btn-active {
-    background-color: #4CAF50; /* adjust as needed */
+    background-color: #5187bd;
     color: white;
-
-/* -----
-SVG Icons - svgicons.sparkk.fr
------ */
-
-.svg-icon {
-  width: 1em;
-  height: 1em;
 }
 
-.svg-icon path,
-.svg-icon polygon,
-.svg-icon rect {
-  fill: #4691f6;
-}
-
-.svg-icon circle {
-  stroke: #4691f6;
-  stroke-width: 1;
+.small-subcategories {
+    font-size: 0.8em;
 }
