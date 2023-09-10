@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Category, Subcategory, Place, Review, Favourite, Ticket, Order, OrderItem
+from .models import Category, Subcategory, Place, PlaceReview, Favourite, Ticket, Order, OrderItem, Profilis
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -54,23 +55,31 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'purchase_date')
-    list_filter = ('purchase_date',)
+    list_display = ('id', 'user', 'purchase_date', 'status')
+    list_filter = ('purchase_date', 'status')
+    list_editable = ('status',)
     search_fields = ('user__username', 'ticket__place__title')
     inlines = [OrderItemInline]
+
+    fieldsets = (
+        ('Order Information', {
+            'fields': ('user',)
+        }),
+    )
 
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('id', 'ticket', 'due_to', 'status')
+    list_editable = ('status',)
     list_filter = ('status',)
-    search_fields = ('id',)
+    search_fields = ('id', 'due_to')
 
 
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('user', 'place', 'rating')
-    list_filter = ('place', 'rating')
+@admin.register(PlaceReview)
+class PlaceReviewAdmin(admin.ModelAdmin):
+    list_display = ('date_created', 'user', 'place', 'rating')
+    list_filter = ('place', 'rating', 'date_created')
     search_fields = ('user__username', 'place__title')
 
 
@@ -79,3 +88,6 @@ class FavouriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'place')
     list_filter = ('user', 'place', 'place__subcategories__category', 'place__subcategories__name')
     search_fields = ('user__username', 'place__subcategories__name')
+
+
+admin.site.register(Profilis)

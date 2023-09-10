@@ -42,7 +42,7 @@ class Place(models.Model):
     tel = models.CharField('Telefono numeris', max_length=20)
     website = models.URLField('Svetainė', max_length=200, null=True, blank=True)
     subcategories = models.ManyToManyField(Subcategory, related_name='places', help_text='Priskirkite subkategorijas')
-    cover = models.ImageField("Nuotrauka", upload_to="covers", null=True)
+    cover = models.ImageField("Nuotrauka", upload_to="covers", null=True, blank=True)
 
     # favourited_by = models.ManyToManyField(User, related_name='favourite_places')
 
@@ -54,14 +54,15 @@ class Place(models.Model):
         verbose_name_plural = 'Objektai'
 
 
-class Review(models.Model):
-    user = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
-    place = models.ForeignKey(Place, related_name='reviews', on_delete=models.CASCADE)
-    text = models.TextField('Atsiliepimas', null=True, blank=True)
-    rating = models.IntegerField('Įvertinimas', validators=[MinValueValidator(1), MaxValueValidator(5)])
+class PlaceReview(models.Model):
+    user = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name="placereview_set", blank=True)
+    content = models.TextField('Atsiliepimas', null=True, blank=True)
+    rating = models.IntegerField('Įvertinimas', null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
-        return f"{self.user.username}  atsiliepimas apie {self.place.title}"
+        return f'{self.content}'
 
     class Meta:
         verbose_name = 'Atsiliepimas'
@@ -122,6 +123,25 @@ class Order(models.Model):
 
     # items = models.ForeignKey("OrderItem", related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
     # total = models.IntegerField('Suma viso:', null=True, blank=True)
+    ORDER_STATUS = (
+        ('Gautas', 'Gautas'),
+        ('Ivykdytas', 'Ivykdytas'),
+        ('Atšauktas', 'Atšauktas'),
+        ('Laukiama apmokėjimo', 'Laukiama apmokėjimo')
+    )
+    status = models.CharField(
+        max_length=50,
+        choices=ORDER_STATUS,
+        blank=True,
+        default='Gautas',
+        help_text='Užsakymo statusas'
+    )
+
+    def get_total_sum(self):
+        total = 0
+        for item in self.order_items.all():
+            total += item.get_total_price()
+        return total
 
     def __str__(self):
         return f"{self.id} {self.user}"
@@ -161,8 +181,8 @@ class OrderItem(models.Model):
             return False
 
     @property
-    def eilutes_total(self):
-        return self.quantity * self.ticket.price
+    def get_total_price(self):
+        return self.quantity * self.ticket.price if self.ticket and self.ticket.price else 0
 
     class Meta:
 

@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'egidas',
+    'egidas.apps.EgidasConfig',
     'tinymce',
     'crispy_forms',
     'crispy_bootstrap4',
@@ -153,3 +153,18 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+from .secret import EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_USE_TLS
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+EMAIL_HOST = EMAIL_HOST
+EMAIL_PORT = EMAIL_PORT
+EMAIL_SMTP_PORT = EMAIL_PORT
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = EMAIL_HOST_USER
+# el. pašto adresas iš kurio siųsite
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+EMAIL_HOST_USER = EMAIL_HOST_USER

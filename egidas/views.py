@@ -12,21 +12,20 @@ from django.core.paginator import Paginator
 # from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
 
 
-from .models import *
+from .models import Category, Subcategory, Place, Ticket, Order, OrderItem, PlaceReview, User, Favourite
+from .forms import PlaceReviewForm, UserOrderCreateForm, UserUpdateForm, ProfilisUpdateForm
 
 
 # Create your views here.
 
 def index(request):
     num_places = Place.objects.all().count()
-    num_reviews = Review.objects.all().count()
+    num_reviews = PlaceReview.objects.all().count()
     num_orders = Order.objects.all().count()
     num_order_items = OrderItem.objects.all().count()
     num_tickets = Ticket.objects.all().count()
 
     username = request.user
-
-    # kaupiam apsilankymų skaičių
     num_visits = request.session.get('num_visits', 1)
     request.session['num_visits'] = num_visits + 1
 
@@ -99,11 +98,135 @@ class PlaceListView(generic.ListView):
         return context
 
 
-# class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
-class PlaceDetailView(generic.DetailView):
+class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
     model = Place
     context_object_name = 'place'
     template_name = 'place_detail.html'
-    # form_class = PlaceReviewForm
+    form_class = PlaceReviewForm
+
+    def get_success_url(self):
+        return reverse('place-detail', kwargs={'pk': self.object.id})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.place = self.object
+        form.instance.user = self.request.user
+        form.save()
+        return super().form_valid(form)
 
 
+class OrderListView(generic.ListView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'orders_list.html'
+    paginate_by = 10
+
+
+class OrderDetailView(generic.edit.FormMixin, generic.DetailView):
+    model = Order
+    context_object_name = 'order'
+    template_name = 'order_detail.html'
+
+    def get_success_url(self):
+        return reverse('uzsakymas-detail', kwargs={'pk': self.object.id})
+
+
+class UserOrderListView(LoginRequiredMixin, generic.ListView):
+    model = Order
+    template_name = 'user_orders.html'
+    context_object_name = 'order_list'
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('purchase_date')
+
+
+@csrf_protect
+def register(request):
+    if request.method == "POST":
+        # paimami duomenys iš formos
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        password2 = request.POST["password2"]
+
+        if password == password2:
+            if User.objects.filter(username=username).exists():
+                messages.error(request, f"Vartotojas Jau egzistuoja!")
+                return redirect('register')
+            else:
+                if User.objects.filter(email=email).exists():
+                    messages.error(request, f"Vartotojas su tokiu paštu {email} egzistuoja!")
+                    return redirect('register')
+                else:
+                    User.objects.create_user(username=username, email=email, password=password)
+                    messages.success(request, f"Vartotojas {username} sukurtas!")
+                    return redirect('login')
+    else:
+        return render(request, "registration/registration.html")
+
+
+@login_required
+def profile(request):
+    if request.method == "GET":
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfilisUpdateForm(instance=request.user.profilis)
+    elif request.method == "POST":
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfilisUpdateForm(request.POST, request.FILES, instance=request.user.profilis)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, "Profilis atnaujintas")
+            return redirect('profile')
+
+    context_t = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+    return render(request, 'profile.html', context=context_t)
+
+
+class OrderByUserCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Order
+    # fields = ['purchase_date', 'id',]
+    success_url = '/egidas/manouzsakymai'
+    template_name = 'user_order_form.html'
+    form_class = UserOrderCreateForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class OrderByUserUpdateView(LoginRequiredMixin, UserPassesTestMixin,
+                            generic.UpdateView):
+    model = Order
+    fields = ['purchase_date', 'id', ]
+    success_url = '/egidas/manouzsakymai'
+    template_name = 'user_order_form.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        order = self.get_object()
+        return self.request.user == order.user
+
+
+class OrderByUserDeleteView(LoginRequiredMixin, UserPassesTestMixin,
+                            generic.DeleteView):
+    model = Order
+    template_name = 'user_order_delete.html'
+    success_url = '/egidas/manouzsakymai'
+
+    def test_func(self):
+        order = self.get_object()
+        return self.request.user == order.user

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h4>Užsakymas: {{ order.purchase_date }}</h4>
+  <p><strong>Statusas:</strong>
+    <span class="
+      {% if order.status == 'G' %}text-info
+      {% elif order.status == 'I' %}text-success
+      {% elif order.status == 'A' %}text-danger
+      {% elif order.status == 'L' %}text-warning
+      {% endif %}
+    ">{{ order.get_status_display }}</span></p>
+  <p><strong>Suma:</strong> {{ order.get_total_sum }}</p>
+<hr>
+  <h5><strong>Užsakyti bilietai:</strong></h5>
+  {% if order.orderitem_set.exists %}
+    <ul>
+      {% for row in order.orderitem_set.all %}
+        <li>{{ row.ticket }} - Kiekis: {{ row.quantity }} - Kaina: {{ row.get_total_price }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Užsakymas bilietų neturi.</p>
+  {% endif %}
+<hr>
+
+{% endblock %}

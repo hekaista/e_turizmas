@@ -26,6 +26,28 @@
 {% endif %}
 <br>
 <hr/>
+{% if user.is_authenticated %}
+<div class="fieldWrapper">
+    <h4>Palikite atsiliepimą</h4>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.content }}
+        <input type="submit" value="Išsaugoti">
+    </form>
+</div>
+{% endif %}
+<hr>
+<h4>Atsiliepimai:</h4>
+{% if place.placereview_set.all %}
+    {% for review in place.placereview_set.all %}
+        <hr/>
+<img class="img-fluid rounded-circle" src="{{ review.user.profilis.nuotrauka.url }}" style="width: 30px; height: 30px;"/>
+<p class="bg-light"><em><strong>{{ review.user }}</strong> {{ review.date_created }}</em></p>
+        <p>{{ review.content }}</p>
+    {% endfor %}
+{% else %}
+    <p>Objektas atsiliepimų neturi</p>
+{% endif %}
 
 <script>
     var latitude = {{ place.latitude }};
