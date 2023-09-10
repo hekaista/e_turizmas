@@ -4,13 +4,25 @@
 <h1 class="text-light bg-dark">{{ place.title }}</h1>
 <div id="map" style="height: 400px;"></div>
 <hr/>
+<div style="display: flex; justify-content: space-between;">
+    <div>
+        <h4><strong>Kontaktai:</strong></h4>
+        <p>{{ place.tel }}</p>
+        <p>{{ place.website }}</p>
+    </div>
+    <div>
+        <h4><strong>Darbo laikas:</strong></h4>
+        <p>{{ place.working_hours }}</p>
+    </div>
+    <div>
+        <h4><strong>Adresas:</strong></h4>
+        <p>{{ place.address }}</p>
+        <p>{{ place.latitude }} | {{ place.longitude }}</p>
+    </div>
+</div>
+<hr/>
 <h4><strong>Apie Objektą:</strong></h4>
 <p>{{ place.description | safe }}</p>
-<hr/>
-<h4><strong>Adresas:</strong></h4>
-<p>{{ place.address }}</p>
-<h4><strong>Koordinatės:</strong></h4>
-<p>{{ place.latitude }} | {{ place.longitude }}</p>
 <hr/>
 {% if place.tickets.all %}
 <h4><strong>Bilietų kainos:</strong></h4>
@@ -32,7 +44,8 @@
     <form action="" method="post">
         {% csrf_token %}
         {{ form.content }}
-        <input type="submit" value="Išsaugoti">
+        <br>
+        <input type="submit" class="btn btn-outline-success btn-sm" value="Išsaugoti">
     </form>
 </div>
 {% endif %}

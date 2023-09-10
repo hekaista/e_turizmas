@@ -142,10 +142,15 @@ class UserOrderListView(LoginRequiredMixin, generic.ListView):
     model = Order
     template_name = 'user_orders.html'
     context_object_name = 'order_list'
+    paginate_by = 3
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).order_by('purchase_date')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order_list'] = context['page_obj']
+        return context
 
 @csrf_protect
 def register(request):

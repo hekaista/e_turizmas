@@ -100,3 +100,14 @@ footer {
     font-size: 0.8em;
 }
 
+
+.account-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.account-heading {
+    font-size: 2em;
+    margin-bottom: 15px;
+}

@@ -8,7 +8,8 @@ class PlaceReviewForm(forms.ModelForm):
         fields = ('content', 'user')
         widgets = {
             'place': forms.HiddenInput(),
-            'user': forms.HiddenInput()
+            'user': forms.HiddenInput(),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Jūsų tekstas...'}),
         }
 
 

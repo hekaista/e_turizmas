@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 
 from tinymce.models import HTMLField
 import uuid
@@ -45,6 +46,8 @@ class Place(models.Model):
     cover = models.ImageField("Nuotrauka", upload_to="covers", null=True, blank=True)
 
     # favourited_by = models.ManyToManyField(User, related_name='favourite_places')
+    def get_absolute_url(self):
+        return reverse('place-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.title
@@ -59,7 +62,8 @@ class PlaceReview(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name="placereview_set", blank=True)
     content = models.TextField('Atsiliepimas', null=True, blank=True)
-    rating = models.IntegerField('Įvertinimas', null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    rating = models.IntegerField('Įvertinimas', null=True, blank=True,
+                                 validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
         return f'{self.content}'
@@ -120,7 +124,6 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     purchase_date = models.DateTimeField('Pirkimo data', auto_now_add=True)
     user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
-
     # items = models.ForeignKey("OrderItem", related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
     # total = models.IntegerField('Suma viso:', null=True, blank=True)
     ORDER_STATUS = (
@@ -140,7 +143,7 @@ class Order(models.Model):
     def get_total_sum(self):
         total = 0
         for item in self.order_items.all():
-            total += item.get_total_price()
+            total += item.get_total_price
         return total
 
     def __str__(self):
@@ -154,8 +157,8 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    order = models.ForeignKey(Order, related_name='Order_items', on_delete=models.CASCADE, null=True, blank=True)
-    ticket = models.ForeignKey(Ticket, related_name='Order_items', on_delete=models.CASCADE, null=True,
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE, null=True, blank=True)
+    ticket = models.ForeignKey(Ticket, related_name='order_items', on_delete=models.CASCADE, null=True,
                                blank=True)
     quantity = models.PositiveIntegerField("Kiekis", default=1)
     due_to = models.DateTimeField('Galojimas iki', default=datetime.now() + timedelta(days=365), null=True, blank=True)

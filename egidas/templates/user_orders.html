@@ -5,21 +5,88 @@
 <p class="text-primary">{{ user.username }}</p>
 <p class="text-secondary">{{ user.email }}</p>
 
-<h1>Mano užsakymai</h1>
+<h1 class="text-center">Mano užsakymai</h1>
+<br>
+<!-- Pagination -->
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;&laquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
+        {% endif %}
 
-{% if order_list %}
-<ul>
-    {% for order in order_list %}
-        <li class="{% if order.status == 'Ivykdytas' %}text-success
-        {% elif order.status == 'Gautas' %}text-info
-        {% elif order.status == 'Atšauktas' %}text-danger
-        {% elif order.status == 'Laukiama apmokėjimo' %}text-warning{% endif %}"> {{ order.status }}
+        <li class="page-item disabled">
+            <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
         </li>
-    {{ order.id }}: {{ order.purchase_date }}
-    <hr>
-    {% endfor %}
-</ul>
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;&raquo;</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+<br>
+{% if order_list %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Užsakymo data</th>
+                <th>Statusas</th>
+                <th>Užsakymo suma (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in order_list %}
+                <tr>
+                    <td>{{ order.purchase_date }}</td>
+                    <td class="{% if order.status == 'Ivykdytas' %}text-success
+                    {% elif order.status == 'Gautas' %}text-info
+                    {% elif order.status == 'Atšauktas' %}text-danger
+                    {% elif order.status == 'Laukiama apmokėjimo' %}text-secondary{% endif %}">
+                        <strong>{{ order.status }}</strong>
+                    </td>
+                    <td>{{ order.get_total_sum }} €</td>
+                </tr>
+                <tr>
+                    <td colspan="3"><strong>Užsakymo ID:</strong> {{ order.id }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"><hr /></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% else %}
-<p>Šiuo metu užsakymų neturite</p>
+    <p>Šiuo metu užsakymų neturite</p>
 {% endif %}
 {% endblock %}
