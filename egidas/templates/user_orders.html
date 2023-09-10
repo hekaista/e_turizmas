@@ -78,7 +78,10 @@
                     <td>{{ order.get_total_sum }} €</td>
                 </tr>
                 <tr>
-                    <td colspan="3"><strong>Užsakymo ID:</strong> {{ order.id }}</td>
+                    <td colspan="3">
+                        <strong>Užsakymo ID:</strong>
+                        <a href="{% url 'order-detail' order.id %}">{{ order.id }}</a>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="3"><hr /></td>

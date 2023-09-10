@@ -1,5 +1,6 @@
 from django import forms
-from .models import User, Profilis, PlaceReview, Order, Ticket
+from .models import User, Profilis, PlaceReview, Order, Ticket, OrderItem
+from django.forms import formset_factory
 
 
 class PlaceReviewForm(forms.ModelForm):
@@ -32,12 +33,16 @@ class DateInput(forms.DateInput):
 
 
 class UserOrderCreateForm(forms.ModelForm):
-    ticket = forms.ModelMultipleChoiceField(
-        queryset=Ticket.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-    )
-    quantity = forms.IntegerField(min_value=1)
-
     class Meta:
         model = Order
-        fields = ['ticket', 'quantity']
+        fields = []
+
+
+
+class OrderItemForm(forms.ModelForm):
+    class Meta:
+        model = OrderItem
+        fields = ['ticket', 'quantity', ]
+
+
+OrderItemFormSet = formset_factory(OrderItemForm, extra=1)

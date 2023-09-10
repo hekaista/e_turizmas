@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, get_object_or_404, redirect, reverse
-from django.views import generic
+from django.views import generic, View
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -8,12 +8,14 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.forms import formset_factory
 
 # from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
 
 
 from .models import Category, Subcategory, Place, Ticket, Order, OrderItem, PlaceReview, User, Favourite
-from .forms import PlaceReviewForm, UserOrderCreateForm, UserUpdateForm, ProfilisUpdateForm
+from .forms import PlaceReviewForm, UserOrderCreateForm, UserUpdateForm, ProfilisUpdateForm, OrderItemForm, \
+    OrderItemFormSet
 
 
 # Create your views here.
@@ -129,13 +131,13 @@ class OrderListView(generic.ListView):
     paginate_by = 10
 
 
-class OrderDetailView(generic.edit.FormMixin, generic.DetailView):
+class OrderDetailView(generic.DetailView):
     model = Order
     context_object_name = 'order'
-    template_name = 'order_detail.html'
+    template_name = 'user_order_detail.html'
 
     def get_success_url(self):
-        return reverse('uzsakymas-detail', kwargs={'pk': self.object.id})
+        return reverse('order-detail', kwargs={'pk': self.object.id})
 
 
 class UserOrderListView(LoginRequiredMixin, generic.ListView):
@@ -151,6 +153,7 @@ class UserOrderListView(LoginRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
         context['order_list'] = context['page_obj']
         return context
+
 
 @csrf_protect
 def register(request):
@@ -198,33 +201,40 @@ def profile(request):
     return render(request, 'profile.html', context=context_t)
 
 
-class OrderByUserCreateView(LoginRequiredMixin, generic.CreateView):
+OrderItemFormSet = formset_factory(OrderItemForm, extra=1)
+
+
+class OrderByUserCreateView(generic.CreateView):
     model = Order
-    success_url = '/egidas/manouzsakymai'
     template_name = 'user_order_form.html'
     form_class = UserOrderCreateForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset'] = OrderItemFormSet(self.request.POST)
+        else:
+            context['formset'] = OrderItemFormSet()
+        return context
+
     def form_valid(self, form):
         form.instance.user = self.request.user
-        order = form.save()
+        self.object = form.save()
+        formset = self.get_context_data()['formset']
 
-        selected_tickets = form.cleaned_data['ticket']
-        quantity = form.cleaned_data['quantity']
-
-        for ticket in selected_tickets:
-            OrderItem.objects.create(
-                order=order,
-                ticket=ticket,
-                quantity=quantity,
-            )
-
-        return redirect(self.success_url)
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data.get('ticket') and form.cleaned_data.get('quantity'):
+                    order_item = form.save(commit=False)
+                    order_item.order = self.object
+                    order_item.save()
+        return redirect('/egidas/manouzsakymai')
 
 
 class OrderByUserUpdateView(LoginRequiredMixin, UserPassesTestMixin,
                             generic.UpdateView):
     model = Order
-    fields = ['purchase_date', 'id', ]
+    fields = ['purchase_date', 'id', 'status']
     success_url = '/egidas/manouzsakymai'
     template_name = 'user_order_form.html'
 

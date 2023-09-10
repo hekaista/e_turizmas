@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+
 {% block content %}
 <div class="content-section">
     <form method="POST">
@@ -8,6 +9,13 @@
             <legend class="border-bottom mb-4">Naujas užsakymas</legend>
             {{ form|crispy }}
         </fieldset>
+        <hr>
+        {{ formset.management_form }}
+        {% for subform in formset %}
+        <div class="form-group">
+            {{ subform|crispy }}
+        </div>
+        {% endfor %}
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Išsaugoti</button>
         </div>
