@@ -62,8 +62,7 @@ class PlaceReview(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name="placereview_set", blank=True)
     content = models.TextField('Atsiliepimas', null=True, blank=True)
-    rating = models.IntegerField('Įvertinimas', null=True, blank=True,
-                                 validators=[MinValueValidator(1), MaxValueValidator(5)])
+    rating = models.IntegerField('Įvertinimas', default=5,  validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
         return f'{self.content}'

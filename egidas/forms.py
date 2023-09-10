@@ -11,6 +11,7 @@ class PlaceReviewForm(forms.ModelForm):
             'place': forms.HiddenInput(),
             'user': forms.HiddenInput(),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Jūsų tekstas...'}),
+            'rating': forms.Select(choices=[(i, i) for i in range(1, 6)], attrs={'class': 'form-control'})
         }
 
 

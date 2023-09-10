@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="text-light bg-dark">{{ place.title }}</h1>
+<!-- Wrapping the title and the button in a flex container -->
+<div style="display: flex; justify-content: space-between; align-items: center; background-color: #132530; width: 100%;">
+    <h1 class="text-light">{{ place.title }}</h1>
+    {% if user.is_authenticated %}
+        <!-- The heart icon -->
+        <div style="text-align: right;">
+            <a href="{% url 'add-favourite' place.id %}" class="btn btn-danger custom-red-button">
+                <i class="fas fa-heart fa-2x "></i>
+            </a>
+        </div>
+    {% endif %}
+</div>
+<!-- Rest of the content -->
 <div id="map" style="height: 400px;"></div>
-<hr/>
-{% if user.is_authenticated %}
-    <div style="text-align: center;">
-        <!-- Add to favorites -->
-        <a href="{% url 'add-favourite' place.id %}" class="btn btn-danger custom-red-button">
-            <i class="fas fa-heart fa-2x"></i>
-        </a>
-    </div>
-{% endif %}
 <hr/>
 
 <div style="display: flex; justify-content: space-between;">
@@ -53,7 +56,8 @@
     <h4>Palikite atsiliepimą</h4>
     <form action="" method="post">
         {% csrf_token %}
-        {{ form.content }}
+        {{ form.content.label_tag }} {{ form.content }}
+        {{ form.rating.label_tag }} {{ form.rating }}
         <br>
         <input type="submit" class="btn btn-outline-success btn-sm" value="Išsaugoti">
     </form>
@@ -64,8 +68,20 @@
 {% if place.placereview_set.all %}
     {% for review in place.placereview_set.all %}
         <hr/>
-<img class="img-fluid rounded-circle" src="{{ review.user.profilis.nuotrauka.url }}" style="width: 30px; height: 30px;"/>
-<p class="bg-light"><em><strong>{{ review.user }}</strong> {{ review.date_created }}</em></p>
+        <img class="img-fluid rounded-circle" src="{{ review.user.profilis.nuotrauka.url }}" style="width: 30px; height: 30px;" />
+        <p class="bg-light"><em><strong>{{ review.user }}</strong> {{ review.date_created }}</em></p>
+
+        <!-- Display Star Ratings -->
+        <div class="rating">
+            {% for i in "12345"|make_list %}
+                {% if i|add:0 <= review.rating %}
+                    <span class="fa-solid fa-star"></span>
+                {% else %}
+                    <span class="fa-regular fa-star"></span>
+                {% endif %}
+            {% endfor %}
+        </div>
+
         <p>{{ review.content }}</p>
     {% endfor %}
 {% else %}
