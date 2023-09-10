@@ -4,6 +4,16 @@
 <h1 class="text-light bg-dark">{{ place.title }}</h1>
 <div id="map" style="height: 400px;"></div>
 <hr/>
+{% if user.is_authenticated %}
+    <div style="text-align: center;">
+        <!-- Add to favorites -->
+        <a href="{% url 'add-favourite' place.id %}" class="btn btn-danger custom-red-button">
+            <i class="fas fa-heart fa-2x"></i>
+        </a>
+    </div>
+{% endif %}
+<hr/>
+
 <div style="display: flex; justify-content: space-between;">
     <div>
         <h4><strong>Kontaktai:</strong></h4>

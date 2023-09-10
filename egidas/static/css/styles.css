@@ -87,7 +87,7 @@ footer {
 .btn {
     padding: 5px;
     background-color: #b2c2d1;
-    border: none;
+    border: 2px;
     cursor: pointer;
 }
 

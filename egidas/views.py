@@ -154,6 +154,12 @@ class UserOrderListView(LoginRequiredMixin, generic.ListView):
         context['order_list'] = context['page_obj']
         return context
 
+class FavouriteListView(generic.ListView):
+    model = Favourite
+    template_name = 'favourites.html'
+
+    def get_queryset(self):
+        return Favourite.objects.filter(user=self.request.user)
 
 @csrf_protect
 def register(request):
@@ -201,7 +207,6 @@ def profile(request):
     return render(request, 'profile.html', context=context_t)
 
 
-OrderItemFormSet = formset_factory(OrderItemForm, extra=1)
 
 
 class OrderByUserCreateView(generic.CreateView):
@@ -256,3 +261,17 @@ class OrderByUserDeleteView(LoginRequiredMixin, UserPassesTestMixin,
     def test_func(self):
         order = self.get_object()
         return self.request.user == order.user
+
+
+@login_required
+def add_favourite(request, place_id):
+    place = get_object_or_404(Place, id=place_id)
+    Favourite.objects.get_or_create(user=request.user, place=place)
+    return redirect('favourites')
+
+
+@login_required
+def remove_favourite(request, place_id):
+    place = get_object_or_404(Place, id=place_id)
+    Favourite.objects.filter(user=request.user, place=place).delete()
+    return redirect('favourites')

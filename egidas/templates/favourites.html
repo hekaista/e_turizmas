@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Pamėgtų vietų sąrašas</h2>
+    
+    <div class="row">
+        {% if object_list %}
+            {% for favourite in object_list %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        {% if favourite.place.cover %}
+                            <img src="{{ favourite.place.cover.url }}" class="card-img-top" alt="{{ favourite.place.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Placeholder image">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ favourite.place.title }}</h5>
+                            <p class="card-text">
+                                {{ favourite.place.address }}<br>
+                                {{ favourite.place.tel }}<br>
+                                {{ favourite.place.website }}
+                            </p>
+                            <a href="{% url 'place-detail' favourite.place.id %}" class="btn btn-primary">Plačiau</a>
+                            <a href="{% url 'remove-favourite' favourite.place.id %}" class="btn btn-danger">Pašalinti</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p class="text-center">Sąrašas tuščias.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -13,5 +13,7 @@ urlpatterns = [
     path('manouzsakymai/new', views.OrderByUserCreateView.as_view(), name='my-new-order'),
     path('manouzsakymai/<uuid:pk>/update', views.OrderByUserUpdateView.as_view(), name='my-order-update'),
     path('manouzsakymai/<uuid:pk>/delete', views.OrderByUserDeleteView.as_view(), name='my-order-delete'),
-
+    path('prideti_pamegta/<int:place_id>/', views.add_favourite, name='add-favourite'),
+    path('istrinti_pamegta/<int:place_id>/', views.remove_favourite, name='remove-favourite'),
+    path('pamegti_objektai/', views.FavouriteListView.as_view(), name='favourites'),
 ]

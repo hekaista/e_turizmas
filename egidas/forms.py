@@ -6,7 +6,7 @@ from django.forms import formset_factory
 class PlaceReviewForm(forms.ModelForm):
     class Meta:
         model = PlaceReview
-        fields = ('content', 'user')
+        fields = ('content', 'rating', 'user',)
         widgets = {
             'place': forms.HiddenInput(),
             'user': forms.HiddenInput(),
