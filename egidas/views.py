@@ -200,14 +200,25 @@ def profile(request):
 
 class OrderByUserCreateView(LoginRequiredMixin, generic.CreateView):
     model = Order
-    # fields = ['purchase_date', 'id',]
     success_url = '/egidas/manouzsakymai'
     template_name = 'user_order_form.html'
     form_class = UserOrderCreateForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        order = form.save()
+
+        selected_tickets = form.cleaned_data['ticket']
+        quantity = form.cleaned_data['quantity']
+
+        for ticket in selected_tickets:
+            OrderItem.objects.create(
+                order=order,
+                ticket=ticket,
+                quantity=quantity,
+            )
+
+        return redirect(self.success_url)
 
 
 class OrderByUserUpdateView(LoginRequiredMixin, UserPassesTestMixin,

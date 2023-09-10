@@ -124,8 +124,7 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     purchase_date = models.DateTimeField('Pirkimo data', auto_now_add=True)
     user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
-    # items = models.ForeignKey("OrderItem", related_name='orders', on_delete=models.CASCADE, null=True, blank=True)
-    # total = models.IntegerField('Suma viso:', null=True, blank=True)
+
     ORDER_STATUS = (
         ('Gautas', 'Gautas'),
         ('Ivykdytas', 'Ivykdytas'),

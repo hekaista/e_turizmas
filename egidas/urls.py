@@ -9,5 +9,6 @@ urlpatterns = [
     path('profilis/', views.profile, name='profile'),
     path('registruotis/', views.register, name='register'),
     path('manouzsakymai/', views.UserOrderListView.as_view(), name='my-orders'),
+    path('manouzsakymai/new', views.OrderByUserCreateView.as_view(), name='my-new-order'),
 
 ]

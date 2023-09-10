@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Profilis, PlaceReview, Order
+from .models import User, Profilis, PlaceReview, Order, Ticket
 
 
 class PlaceReviewForm(forms.ModelForm):
@@ -32,9 +32,12 @@ class DateInput(forms.DateInput):
 
 
 class UserOrderCreateForm(forms.ModelForm):
+    ticket = forms.ModelMultipleChoiceField(
+        queryset=Ticket.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+    )
+    quantity = forms.IntegerField(min_value=1)
+
     class Meta:
         model = Order
-        fields = []
-        widgets = {
-            'user': forms.HiddenInput(),
-        }
+        fields = ['ticket', 'quantity']
