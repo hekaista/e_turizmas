@@ -29,5 +29,5 @@ urlpatterns = [
               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [
-    path('library/accounts/', include('django.contrib.auth.urls'))
+    path('egidas/accounts/', include('django.contrib.auth.urls'))
 ]

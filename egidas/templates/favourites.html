@@ -7,8 +7,8 @@
     <div class="row">
         {% if object_list %}
             {% for favourite in object_list %}
-                <div class="col-md-4">
-                    <div class="card h-100">
+                <div class="col-sm-6 col-md-3 d-flex align-items-stretch">
+                    <div class="card mb-4 shadow-sm">
                         {% if favourite.place.cover %}
                             <img src="{{ favourite.place.cover.url }}" class="card-img-top" alt="{{ favourite.place.title }}">
                         {% else %}
@@ -17,9 +17,11 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ favourite.place.title }}</h5>
                             <p class="card-text">
-                                {{ favourite.place.address }}<br>
-                                {{ favourite.place.tel }}<br>
-                                {{ favourite.place.website }}
+                                <span style="font-size: 0.8em;">
+                                    {{ favourite.place.address }}<br>
+                                    {{ favourite.place.tel }}<br>
+                                    {{ favourite.place.website }}
+                                </span>
                             </p>
                             <a href="{% url 'place-detail' favourite.place.id %}" class="btn btn-primary">Plačiau</a>
                             <a href="{% url 'remove-favourite' favourite.place.id %}" class="btn btn-danger">Pašalinti</a>

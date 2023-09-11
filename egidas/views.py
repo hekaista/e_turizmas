@@ -1,21 +1,13 @@
-from django.shortcuts import render, get_object_or_404, get_object_or_404, redirect, reverse
-from django.views import generic, View
+from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.views import generic
 from django.db.models import Q
-from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
-from django.forms import formset_factory
-
+from django.contrib.auth.decorators import login_required, user_passes_test
 # from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
-
-
 from .models import Category, Subcategory, Place, Ticket, Order, OrderItem, PlaceReview, User, Favourite
-from .forms import PlaceReviewForm, UserOrderCreateForm, UserUpdateForm, ProfilisUpdateForm, OrderItemForm, \
-    OrderItemFormSet
+from .forms import PlaceReviewForm, UserOrderCreateForm, UserUpdateForm, ProfilisUpdateForm, OrderItemFormSet
 
 
 # Create your views here.
@@ -124,11 +116,19 @@ class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
         return super().form_valid(form)
 
 
+def is_admin(user):
+    return user.groups.filter(name='admin').exists()
+
+
+# @user_passes_test(is_admin)
 class OrderListView(generic.ListView):
     model = Order
     context_object_name = 'orders'
     template_name = 'orders_list.html'
     paginate_by = 10
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('-date_created')
 
 
 class OrderDetailView(generic.DetailView):
@@ -144,15 +144,16 @@ class UserOrderListView(LoginRequiredMixin, generic.ListView):
     model = Order
     template_name = 'user_orders.html'
     context_object_name = 'order_list'
-    paginate_by = 3
+    paginate_by = 5
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user).order_by('purchase_date')
+        return Order.objects.filter(user=self.request.user).order_by('-purchase_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['order_list'] = context['page_obj']
         return context
+
 
 class FavouriteListView(generic.ListView):
     model = Favourite
@@ -160,6 +161,7 @@ class FavouriteListView(generic.ListView):
 
     def get_queryset(self):
         return Favourite.objects.filter(user=self.request.user)
+
 
 @csrf_protect
 def register(request):
@@ -207,8 +209,6 @@ def profile(request):
     return render(request, 'profile.html', context=context_t)
 
 
-
-
 class OrderByUserCreateView(generic.CreateView):
     model = Order
     template_name = 'user_order_form.html'
@@ -239,7 +239,7 @@ class OrderByUserCreateView(generic.CreateView):
 class OrderByUserUpdateView(LoginRequiredMixin, UserPassesTestMixin,
                             generic.UpdateView):
     model = Order
-    fields = ['purchase_date', 'id', 'status']
+    fields = ['status']
     success_url = '/egidas/manouzsakymai'
     template_name = 'user_order_form.html'
 

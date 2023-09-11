@@ -7,14 +7,11 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Ištrinti užsakymą</legend>
             <h2>Ar tikrai norite ištrinti šį užsakymą?</h2>
-            <h5>Užsakymo ID: {{ object.id }}</h5>
-            <h5>Užsakymo data: {{ object.data }}</h5>
-            <h5>Užsakymo automobilis: {{ object.automobilis }}</h5>
-            <h5>Užsakymo statusas: {{ object.get_status_display }}</h5>
+            <h5>Užsakymo ID: {{ object.uuid }}</h5>
         </fieldset>
         <div class="form-group">
             <button class="btn btn-danger" type="submit">Taip, ištrinti</button>
-            <a class="btn btn-secondary" href="{% url 'uzsakymas-detail' object.id %}">Atšaukti</a>
+            <a class="btn btn-secondary" href="{% url 'order-detail' object.id %}">Atšaukti</a>
         </div>
     </form>
 </div>

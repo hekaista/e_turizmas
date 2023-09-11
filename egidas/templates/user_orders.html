@@ -63,6 +63,7 @@
                 <th>Užsakymo data</th>
                 <th>Statusas</th>
                 <th>Užsakymo suma (€)</th>
+                <th>Veiksmai</th>
             </tr>
         </thead>
         <tbody>
@@ -76,11 +77,14 @@
                         <strong>{{ order.status }}</strong>
                     </td>
                     <td>{{ order.get_total_sum }} €</td>
+                    <td>
+                        <a class="btn btn-danger btn-sm" href="{% url 'my-order-delete' order.id %}">Ištrinti</a>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="3">
                         <strong>Užsakymo ID:</strong>
-                        <a href="{% url 'order-detail' order.id %}">{{ order.id }}</a>
+                        <a href="{% url 'order-detail' order.id %}">{{ order.id }}   </a>
                     </td>
                 </tr>
                 <tr>

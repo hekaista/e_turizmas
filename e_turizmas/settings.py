@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'tinymce',
     'crispy_forms',
     'crispy_bootstrap4',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -165,6 +166,5 @@ EMAIL_PORT = EMAIL_PORT
 EMAIL_SMTP_PORT = EMAIL_PORT
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = EMAIL_HOST_USER
-# el. pašto adresas iš kurio siųsite
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 EMAIL_HOST_USER = EMAIL_HOST_USER

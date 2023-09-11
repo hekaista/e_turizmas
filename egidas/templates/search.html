@@ -5,7 +5,7 @@
 {% if search_results %}
 <ul>
     {% for place in search_results %}
-    <li>{{place.title}} - {{ place.address }}</li>
+    <li><a href="{% url 'place-detail' place.id %}"> {{place.title}} </a>- {{ place.address }}</li>
     {% endfor %}
 </ul>
 {% else  %}
