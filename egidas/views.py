@@ -32,7 +32,10 @@ def index(request):
         'username': username,
         'num_visits': num_visits
     }
-
+    if not request.user.is_authenticated:
+        messages.info(request,
+                      "Dar nesiregistravote? Užsiregistruokite ir gaukite prieigą prie bilietų pirkimo, "
+                      "objektų įvertinimo ir atsiliepimų rašymo. Sukurkite savo mėgstamiausių sąrašą.")
     return render(request, 'index.html', context=context)
 
 
@@ -121,7 +124,7 @@ def is_admin(user):
 
 
 # @user_passes_test(is_admin)
-class OrderListView(generic.ListView):
+class OrderListView(LoginRequiredMixin, generic.ListView):
     model = Order
     context_object_name = 'orders'
     template_name = 'orders_list.html'
@@ -131,7 +134,7 @@ class OrderListView(generic.ListView):
         return Order.objects.filter(user=self.request.user).order_by('-date_created')
 
 
-class OrderDetailView(generic.DetailView):
+class OrderDetailView(LoginRequiredMixin, generic.DetailView):
     model = Order
     context_object_name = 'order'
     template_name = 'user_order_detail.html'
@@ -155,7 +158,7 @@ class UserOrderListView(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class FavouriteListView(generic.ListView):
+class FavouriteListView(LoginRequiredMixin, generic.ListView):
     model = Favourite
     template_name = 'favourites.html'
 
