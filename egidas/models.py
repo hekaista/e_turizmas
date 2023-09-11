@@ -140,7 +140,7 @@ class Order(models.Model):
 
     def get_total_sum(self):
         total = 0
-        for item in self.orderitem_set.all():
+        for item in self.order_items.all():
             total += item.get_total_price
         return total
 
@@ -154,8 +154,8 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True,
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE, null=True, blank=True)
+    ticket = models.ForeignKey(Ticket, related_name='order_items', on_delete=models.CASCADE, null=True,
                                blank=True)
     quantity = models.PositiveIntegerField("Kiekis", default=1)
     ticket_copy = models.ForeignKey('TicketCopy', related_name='order_items', on_delete=models.CASCADE, null=True,

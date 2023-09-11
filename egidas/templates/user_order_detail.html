@@ -1,43 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="content-section">
-        <h2 class="text-left mb-4">Užsakymo nr. Užsakymo ID: {{ order.id }}</h2>
-        <p><strong>Pirkimo data:</strong> {{ order.purchase_date }}</p>
-        <p><strong>Vartotojas:</strong> {{ order.user }}</p>
-        <p>
-            <strong>Statusas:
+<div class="content-section">
+    <h2 class="text-left mb-4">Užsakymo nr. Užsakymo ID: {{ order.id }}</h2>
+    <p><strong>Pirkimo data:</strong> {{ order.purchase_date }}</p>
+    <p><strong>Vartotojas:</strong> {{ order.user }}</p>
+    <p>
+        <strong>Statusas:
             <span class="{% if order.status == 'Ivykdytas' %}text-success
                         {% elif order.status == 'Gautas' %}text-info
                         {% elif order.status == 'Atšauktas' %}text-danger
                         {% elif order.status == 'Laukiama apmokėjimo' %}text-secondary{% endif %}">
             {{ order.status }}
             </span>
-            </strong>
-        </p>
-        <h3 class="mt-4">Užsakymo info:</h3>
-        <table class="table table-striped">
-            <thead>
+        </strong>
+    </p>
+    <h3 class="mt-4">Užsakymo info:</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Bilieto ID</th>
+            <th>Bilietas</th>
+            <th>Kiekis</th>
+            <th>Galioja iki</th>
+            <th>Statusas</th>
+            <th>Kaina</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in order.order_items.all %}
+            {% for copy in item.ticket.ticket_copies.all %}
                 <tr>
-                    <th>Bilietas</th>
-                    <th>Kiekis</th>
-                    <th>Galioja iki</th>
-                    <th>Statusas</th>
-                    <th>Viso kaina</th>
+                    <td>{{ copy.id }}</td>
+                    <td>{{ copy.ticket }}</td> <!-- Display the ticket related to the ticket copy -->
+                    <td>{{ 1 }}</td>
+                    <td>{{ copy.due_to }}</td>
+                    <td><span class="status-{{ copy.status|lower }}">{{ copy.get_status_display }}</span></td>
+                    <td>{{ item.ticket.price }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for item in order.order_items.all %}
-                    <tr>
-                        <td>{{ item.ticket }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.due_to }}</td>
-                        <td><span class="status-{{ item.status|lower }}">{{ item.status }}</span></td>
-                        <td>{{ item.get_total_price }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <h4 class="text-right mb-4"><strong>Viso suma:</strong> {{ order.get_total_sum }}</h4>
-    </div>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+    <h4 class="text-right mb-4"><strong>Viso suma:</strong> {{ order.get_total_sum }}</h4>
+</div>
 {% endblock %}

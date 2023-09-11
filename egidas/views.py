@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views import generic
-from django.db import transaction
 from django.db.models import Q, Avg
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.decorators.csrf import csrf_protect
@@ -230,24 +229,16 @@ class OrderByUserCreateView(generic.CreateView):
         return context
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        formset = context['formset']
+        form.instance.user = self.request.user
+        self.object = form.save()
+        formset = self.get_context_data()['formset']
 
-        with transaction.atomic():
-            self.object = form.save(commit=False)
-            self.object.user = self.request.user
-            self.object.save()
-
-            if formset.is_valid():
-                for form in formset:
-                    if form.cleaned_data.get('ticket') and form.cleaned_data.get('quantity'):
-                        order_item = form.save(commit=False)
-                        order_item.order = self.object
-                        order_item.save()
-            else:
-                transaction.rollback()
-                return self.form_invalid(form)
-
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data.get('ticket') and form.cleaned_data.get('quantity'):
+                    order_item = form.save(commit=False)
+                    order_item.order = self.object
+                    order_item.save()
         return redirect('/egidas/manouzsakymai')
 
 
