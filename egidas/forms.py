@@ -39,7 +39,6 @@ class UserOrderCreateForm(forms.ModelForm):
         fields = []
 
 
-
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem

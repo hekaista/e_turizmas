@@ -1,8 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p>Sėkmingai atsijungėte!</p>
-<a href="{% url 'login'  %}">Prisijungti iš naujo</a>
-
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Atsijungta</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Sėkmingai atsijungėte!</p>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Prisijungti iš naujo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

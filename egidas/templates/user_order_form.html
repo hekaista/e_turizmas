@@ -11,14 +11,38 @@
         </fieldset>
         <hr>
         {{ formset.management_form }}
-        {% for subform in formset %}
-        <div class="form-group">
-            {{ subform|crispy }}
+        <div id="form-set">
+            {% for subform in formset %}
+            <div class="form-group">
+                {{ subform|crispy }}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+
+        <!-- tuscia forma klonavimui -->
+        <div id="empty-form" style="display:none;">
+            {{ formset.empty_form|crispy }}
+        </div>
+
         <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Išsaugoti</button>
+            <button type="button" id="add-form" class="btn btn-secondary">Pridėti bilietą</button>
+            <button class="btn btn-outline-info" type="submit">Patvirtinti</button>
         </div>
     </form>
+    <!-- Java skriptas -->
+    <script>
+        // Dynamic formset adding logic
+        let formIndex = {{ formset.total_form_count }};
+        const addFormBtn = document.getElementById('add-form');
+        const formSet = document.getElementById('form-set');
+        const emptyForm = document.getElementById('empty-form').innerHTML;
+
+        addFormBtn.addEventListener('click', function(){
+            let newForm = emptyForm.replace(/__prefix__/g, formIndex);
+            formSet.insertAdjacentHTML('beforeend', newForm);
+            formIndex++;
+            document.getElementById('id_orderitem_set-TOTAL_FORMS').value = formIndex;
+        });
+    </script>
 </div>
 {% endblock content %}
