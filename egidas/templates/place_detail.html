@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Wrapping the title and the button in a flex container -->
 <div style="display: flex; justify-content: space-between; align-items: center; background-color: #132530; width: 100%;">
     <h1 class="text-light">{{ place.title }}</h1>
     {% if user.is_authenticated %}
@@ -13,7 +12,6 @@
         </div>
     {% endif %}
 </div>
-<!-- Rest of the content -->
 <div id="map" style="height: 400px;"></div>
 <hr/>
 
@@ -51,9 +49,21 @@
 {% endif %}
 <br>
 <hr/>
+<div class="rating">
+    <h4><strong>Vidutinis įvertinimas:</strong></h4>
+    {% for i in "12345"|make_list %}
+        {% if i|add:0 <= average_rating %}
+            <span class="fa-solid fa-star" style="color: #ffa82e;"></span>
+        {% else %}
+            <span class="fa-regular fa-star" style="color: #ffa82e;"></span>
+        {% endif %}
+    {% endfor %}
+    <h4> ({{ average_rating }})</h4>
+</div>
+<hr/>
 {% if user.is_authenticated %}
 <div class="fieldWrapper">
-    <h4>Palikite atsiliepimą</h4>
+    <h6><strong>Palikite atsiliepimą</strong></h6>
     <form action="" method="post">
         {% csrf_token %}
         {{ form.content.label_tag }} {{ form.content }}
@@ -64,7 +74,8 @@
 </div>
 {% endif %}
 <hr>
-<h4>Atsiliepimai:</h4>
+<!-- reitingo vidurkis -->
+<h4><strong>Atsiliepimai:</strong></h4>
 {% if place.placereview_set.all %}
     {% for review in place.placereview_set.all %}
         <hr/>

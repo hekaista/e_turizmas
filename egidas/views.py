@@ -101,6 +101,14 @@ class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
     template_name = 'place_detail.html'
     form_class = PlaceReviewForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        average_rating = PlaceReview.objects.filter(place=self.object).aggregate(Avg('rating'))['rating__avg']
+        if average_rating is None:
+            average_rating = 'No ratings yet'
+        context['average_rating'] = average_rating
+        return context
+
     def get_success_url(self):
         return reverse('place-detail', kwargs={'pk': self.object.id})
 
@@ -119,11 +127,6 @@ class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
         return super().form_valid(form)
 
 
-def is_admin(user):
-    return user.groups.filter(name='admin').exists()
-
-
-# @user_passes_test(is_admin)
 class OrderListView(LoginRequiredMixin, generic.ListView):
     model = Order
     context_object_name = 'orders'
