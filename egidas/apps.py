@@ -6,4 +6,4 @@ class EgidasConfig(AppConfig):
     name = 'egidas'
 
     def ready(self):
-        from .signals import create_profile
+        from .signals import create_profile, create_ticket_copies

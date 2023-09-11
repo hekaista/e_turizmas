@@ -62,7 +62,7 @@ class PlaceReview(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name="placereview_set", blank=True)
     content = models.TextField('Atsiliepimas', null=True, blank=True)
-    rating = models.IntegerField('Įvertinimas', default=5,  validators=[MinValueValidator(1), MaxValueValidator(5)])
+    rating = models.IntegerField('Įvertinimas', default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
         return f'{self.content}'
@@ -140,7 +140,7 @@ class Order(models.Model):
 
     def get_total_sum(self):
         total = 0
-        for item in self.order_items.all():
+        for item in self.orderitem_set.all():
             total += item.get_total_price
         return total
 
@@ -154,12 +154,28 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE, null=True, blank=True)
-    ticket = models.ForeignKey(Ticket, related_name='order_items', on_delete=models.CASCADE, null=True,
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True,
                                blank=True)
     quantity = models.PositiveIntegerField("Kiekis", default=1)
-    due_to = models.DateTimeField('Galojimas iki', default=datetime.now() + timedelta(days=365), null=True, blank=True)
+    ticket_copy = models.ForeignKey('TicketCopy', related_name='order_items', on_delete=models.CASCADE, null=True,
+                                    blank=True)
+
+    @property
+    def get_total_price(self):
+        return self.quantity * self.ticket.price if self.ticket and self.ticket.price else 0
+
+    class Meta:
+        verbose_name = 'Užsakymo eilutė'
+        verbose_name_plural = 'Užsakymo eilutės'
+
+    def __str__(self):
+        return f"Ūnikalus bilietas į {self.ticket.place}, {self.ticket.service}"
+
+class TicketCopy(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    ticket = models.ForeignKey(Ticket, related_name='ticket_copies', on_delete=models.CASCADE)
+    due_to = models.DateTimeField('Galojimas iki', null=True, blank=True)
 
     STATUS = [
         ('G', 'Galiojantis'),
@@ -181,19 +197,9 @@ class OrderItem(models.Model):
         else:
             return False
 
-    @property
-    def get_total_price(self):
-        return self.quantity * self.ticket.price if self.ticket and self.ticket.price else 0
-
     class Meta:
-
-        ordering = ['due_to']
-        verbose_name = 'Užsakymo eilutė'
-        verbose_name_plural = 'Užsakymo eilutės'
-
-    def __str__(self):
-        return f"Ūnikalus bilietas {self.id} į {self.ticket.place}, {self.ticket.service}"
-
+        verbose_name = 'Unikalus bilietas'
+        verbose_name_plural = 'Unikalūs bilietai'
 
 class Profilis(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
@@ -214,5 +220,3 @@ class Profilis(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.nuotrauka.path)
-
-
