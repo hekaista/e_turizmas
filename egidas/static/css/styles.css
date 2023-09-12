@@ -36,12 +36,12 @@ footer {
   width: 100%;
 }
 
-/* footer shaddow */
+/* footerio seselis */
 .my-top-shadow {
   box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* navigation buttonds */
+/* navigacijos mygtukai */
 .index-title {
     text-align: center;
     font-size: 2em;
@@ -78,7 +78,7 @@ footer {
 .subcategory-row {
     display: flex;
     flex-direction: row;
-    gap: 10px; /* adjust as needed */
+    gap: 10px;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;

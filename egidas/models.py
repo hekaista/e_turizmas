@@ -87,7 +87,7 @@ class Favourite(models.Model):
 
 class Ticket(models.Model):
     place = models.ForeignKey(Place, related_name='tickets', on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=9, decimal_places=2)
+    price = models.DecimalField('Kaina',max_digits=9, decimal_places=2)
     service = models.CharField('Paslaugos pavadinimas', max_length=255, null=True, blank=True)
     TYPE = (
         ('Suaugusiam', 'Suaugusiems'),
@@ -153,7 +153,6 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE, null=True, blank=True)
     ticket = models.ForeignKey(Ticket, related_name='order_items', on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.PositiveIntegerField("Kiekis", default=1)
-    #ticket_copy = models.ForeignKey('TicketCopy', related_name='order_items', on_delete=models.CASCADE)
 
     @property
     def get_total_price(self):

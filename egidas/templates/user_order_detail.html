@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="content-section">
-    <h2 class="text-left mb-4">Užsakymo nr. Užsakymo ID: {{ order.id }}</h2>
+    <h2 class="text-left mb-4">Užsakymo ID: {{ order.id }}</h2>
     <p><strong>Pirkimo data:</strong> {{ order.purchase_date }}</p>
     <p><strong>Vartotojas:</strong> {{ order.user }}</p>
     <p>
@@ -15,29 +15,26 @@
             </span>
         </strong>
     </p>
-    <h3 class="mt-4">Užsakymo info:</h3>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Bilietas</th>
-            <th>Kaina:</th>
-            <th>Statusas</th>
-            <th>Galioja iki:</th>
-        </tr>
-        </thead>
-        <tbody>
+    <h3 class="mt-4">Užsakymo bilietai:</h3>
+    <div class="row">
         {% for ticket_copy in order.ticket_copies.all %}
-            <tr>
-                <td>{{ ticket_copy.id }}</td>
-                <td>{{ ticket_copy.ticket.service }}</td>
-                <td>{{ ticket_copy.ticket.price }} Eur</td>
-                <td><span class="status-{{ ticket_copy.status|lower }}">{{ ticket_copy.get_status_display }}</span></td>
-                <td>{{ ticket_copy.due_to }}</td>
-            </tr>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <!--  QR paveiksliukas -->
+                    <!-- <img src="{{ ticket_copy.qr_code.url }}" alt="QR Code" class="card-img-top"> -->
+                    <div class="card-body">
+                        <h5 class="card-title">{{ ticket_copy.ticket.service }}</h5>
+                        <p class="card-text">
+                            <strong>ID:</strong> {{ ticket_copy.id }}<br>
+                            <strong>Kaina:</strong> {{ ticket_copy.ticket.price }} Eur<br>
+                            <strong>Statusas:</strong> <span class="status-{{ ticket_copy.status|lower }}">{{ ticket_copy.get_status_display }}</span><br>
+                            <strong>Galioja iki:</strong> {{ ticket_copy.due_to }}
+                        </p>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
-    <h4 class="text-right mb-4"><strong>Viso suma:</strong> {{ order.get_total_sum }}</h4>
+    </div>
+    <h4 class="text-right mb-4"><strong>Viso suma:</strong> {{ order.get_total_sum }} Eur</h4>
 </div>
 {% endblock %}
