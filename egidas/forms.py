@@ -45,4 +45,4 @@ class OrderItemForm(forms.ModelForm):
         fields = ['ticket', 'quantity', ]
 
 
-OrderItemFormSet = formset_factory(OrderItemForm, extra=1)
+OrderItemFormSet = formset_factory(OrderItemForm, extra=3)

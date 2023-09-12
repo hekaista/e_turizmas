@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-# from .forms import BookReviewForm, UserUpdateForm, ProfilisUpdateForm, UserBookCreateForm
+
 from .models import Category, Subcategory, Place, Ticket, Order, OrderItem, PlaceReview, User, Favourite
 from .forms import PlaceReviewForm, UserOrderCreateForm, UserUpdateForm, ProfilisUpdateForm, OrderItemFormSet
 

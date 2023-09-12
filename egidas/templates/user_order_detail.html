@@ -19,7 +19,6 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Bilieto ID</th>
             <th>Bilietas</th>
             <th>Kiekis</th>
             <th>Galioja iki</th>
@@ -29,16 +28,13 @@
         </thead>
         <tbody>
         {% for item in order.order_items.all %}
-            {% for copy in item.ticket.ticket_copies.all %}
-                <tr>
-                    <td>{{ copy.id }}</td>
-                    <td>{{ copy.ticket }}</td> <!-- Display the ticket related to the ticket copy -->
-                    <td>{{ 1 }}</td>
-                    <td>{{ copy.due_to }}</td>
-                    <td><span class="status-{{ copy.status|lower }}">{{ copy.get_status_display }}</span></td>
-                    <td>{{ item.ticket.price }}</td>
-                </tr>
-            {% endfor %}
+            <tr>
+                <td>{{ item.ticket }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.ticket_copy.due_to }}</td>
+                <td><span class="status-{{ item.ticket_copy.status|lower }}">{{ item.ticket_copy.get_status_display }}</span></td>
+                <td>{{ item.get_total_price }}</td>
+            </tr>
         {% endfor %}
         </tbody>
     </table>
