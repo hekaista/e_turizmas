@@ -1,13 +1,25 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="content-section">
-    <h2>Order Confirmation</h2>
-    <p>Order ID: {{ order.id }}</p>
-    <p>Total Sum: {{ total_sum }}</p>
-    <!-- Add other details like list of items, quantities etc. -->
-    <form method="post" action="{% url 'order-confirmation' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-success">Patvirtinti užsakymą</button>
-    </form>
-</div>
-{% endblock content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+    <div style="margin: auto; max-width: 600px; padding: 20px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 5px;">
+        <h1 style="color: #333366;">Jūsų užsakymas patvirtintas</h1>
+        <p style="font-size: 18px;">Order ID: <strong>{{ order_id }}</strong></p>
+
+        <h2 style="color: #333366;">Jūsų bilietai:</h2>
+
+        <ul style="list-style: none; padding: 0;">
+            {% for ticket_copy in ticket_copies %}
+                <li style="margin-bottom: 20px; background-color: #e9e9e9; padding: 15px; border-radius: 3px;">
+                    <div style="font-size: 16px;">Bilieto ID: <strong>{{ ticket_copy.id }}</strong></div>
+                    <div style="font-size: 16px;">Pavadinimas: {{ ticket_copy.ticket.place }}, {{ ticket_copy.ticket.service }}</div>
+                    <div style="font-size: 16px;">Statusas: <strong>{{ ticket_copy.get_status_display }}</strong></div>
+                    <div style="font-size: 16px;">Galioja iki: {{ ticket_copy.due_to }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

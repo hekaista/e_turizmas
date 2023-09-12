@@ -1,7 +1,8 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 from .models import Profilis, OrderItem, TicketCopy, Order
 from datetime import datetime, timedelta
@@ -27,13 +28,18 @@ def create_ticket_copies(sender, instance, created, **kwargs):
 def send_confirmation_email(sender, instance, **kwargs):
     if instance.status == 'Ivykdytas':
         subject = f'Jūsų užsakymas patvirtintas'
-        message = f'Jūsų užsakymas {instance.id} patvirtintas\n' \
-                  f'Jūsų bilietai:\n'
-
-        for ticket_copy in instance.ticket_copies.all():
-            message += f"\nBilieto  ID: {ticket_copy.id}, " \
-                       f"Pavadinimas: {ticket_copy.ticket.place}, {ticket_copy.ticket.service}, " \
-                       f"Statusas: {ticket_copy.get_status_display()}, " \
-                       f"Galioja iki: {ticket_copy.due_to}"
-
-        send_mail(subject, message, 'info@epixel.lt', [instance.user.email])
+        html_content = render_to_string(
+            'order_confirmation.html',
+            {
+                'order_id': instance.id,
+                'ticket_copies': instance.ticket_copies.all()
+            }
+        )
+        email = EmailMessage(
+            subject,
+            html_content,
+            'info@epixel.lt',
+            [instance.user.email]
+        )
+        email.content_subtype = 'html'
+        email.send()
