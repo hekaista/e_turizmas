@@ -4,7 +4,7 @@ from django.db.models import Q, Avg
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 
 from .models import Category, Subcategory, Place, Ticket, Order, OrderItem, PlaceReview, User, Favourite
 from .forms import PlaceReviewForm, UserOrderCreateForm, UserUpdateForm, ProfilisUpdateForm, OrderItemFormSet
@@ -105,7 +105,7 @@ class PlaceDetailView(generic.edit.FormMixin, generic.DetailView):
         context = super().get_context_data(**kwargs)
         average_rating = PlaceReview.objects.filter(place=self.object).aggregate(Avg('rating'))['rating__avg']
         if average_rating is None:
-            average_rating = 'No ratings yet'
+            average_rating = 'Būkite pirmas įvertinę objektą'
         context['average_rating'] = average_rating
         return context
 

@@ -82,7 +82,7 @@
         <img class="img-fluid rounded-circle" src="{{ review.user.profilis.nuotrauka.url }}" style="width: 30px; height: 30px;" />
         <p class="bg-light"><em><strong>{{ review.user }}</strong> {{ review.date_created }}</em></p>
 
-        <!-- Display Star Ratings -->
+        <!-- zvaigzduciu atvaizdavimas -->
         <div class="rating">
             {% for i in "12345"|make_list %}
                 {% if i|add:0 <= review.rating %}

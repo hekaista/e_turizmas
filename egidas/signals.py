@@ -24,6 +24,7 @@ def create_ticket_copies(sender, instance, created, **kwargs):
                 order=instance.order
             )
 
+
 @receiver(post_save, sender=Order)
 def send_confirmation_email(sender, instance, **kwargs):
     if instance.status == 'Ivykdytas':

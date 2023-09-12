@@ -19,13 +19,12 @@
     <div class="row">
         {% for ticket_copy in order.ticket_copies.all %}
             <div class="col-md-4 mb-4">
-                <div class="card">
-                    <!--  QR paveiksliukas -->
-                    <!-- <img src="{{ ticket_copy.qr_code.url }}" alt="QR Code" class="card-img-top"> -->
+                <div class="card d-flex flex-column h-100">
+                    <!--  img src="{{ ticket_copy.qr_code.url }}" alt="QR Code" class="card-img-top" -->
                     <div class="card-body">
                         <h5 class="card-title">{{ ticket_copy.ticket.service }}</h5>
                         <p class="card-text">
-                            <strong>ID:</strong> {{ ticket_copy.id }}<br>
+                           <strong>ID:</strong> {{ ticket_copy.id }}<br>
                             <strong>Kaina:</strong> {{ ticket_copy.ticket.price }} Eur<br>
                             <strong>Statusas:</strong> <span class="status-{{ ticket_copy.status|lower }}">{{ ticket_copy.get_status_display }}</span><br>
                             <strong>Galioja iki:</strong> {{ ticket_copy.due_to }}

@@ -6,7 +6,7 @@ from django.urls import reverse
 from tinymce.models import HTMLField
 import uuid
 from PIL import Image
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 
 
 class Category(models.Model):
@@ -32,7 +32,6 @@ class Subcategory(models.Model):
         verbose_name_plural = 'Subkategorijos'
 
 
-# Place Model
 class Place(models.Model):
     title = models.CharField('Pavadinimas', max_length=200)
     address = models.CharField("Adresas", max_length=200, null=True, blank=True)
@@ -45,7 +44,6 @@ class Place(models.Model):
     subcategories = models.ManyToManyField(Subcategory, related_name='places', help_text='Priskirkite subkategorijas')
     cover = models.ImageField("Nuotrauka", upload_to="covers", null=True, blank=True)
 
-    # favourited_by = models.ManyToManyField(User, related_name='favourite_places')
     def get_absolute_url(self):
         return reverse('place-detail', args=[str(self.id)])
 
@@ -87,7 +85,7 @@ class Favourite(models.Model):
 
 class Ticket(models.Model):
     place = models.ForeignKey(Place, related_name='tickets', on_delete=models.CASCADE)
-    price = models.DecimalField('Kaina',max_digits=9, decimal_places=2)
+    price = models.DecimalField('Kaina', max_digits=9, decimal_places=2)
     service = models.CharField('Paslaugos pavadinimas', max_length=255, null=True, blank=True)
     TYPE = (
         ('Suaugusiam', 'Suaugusiems'),
@@ -112,7 +110,6 @@ class Ticket(models.Model):
     class Meta:
         verbose_name = 'Bilietas'
         verbose_name_plural = 'Bilietai'
-
 
 
 class Order(models.Model):
@@ -163,7 +160,7 @@ class OrderItem(models.Model):
         verbose_name_plural = 'Užsakymo eilutės'
 
     def __str__(self):
-        return f"Ūnikalus bilietas į {self.ticket.place}, {self.ticket.service}"
+        return f"{self.ticket.place}"
 
 
 class TicketCopy(models.Model):
@@ -196,6 +193,7 @@ class TicketCopy(models.Model):
             return False
 
     class Meta:
+        ordering = ['due_to']
         verbose_name = 'Unikalus bilietas'
         verbose_name_plural = 'Unikalūs bilietai'
 
@@ -211,7 +209,6 @@ class Profilis(models.Model):
         verbose_name = 'Profilis'
         verbose_name_plural = 'Profiliai'
 
-    # User nuotraukos pridėjimas ir dydžio keitimas, naujojam PIL biblioteka
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         img = Image.open(self.nuotrauka.path)

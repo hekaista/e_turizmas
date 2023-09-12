@@ -50,4 +50,4 @@ class OrderItemForm(forms.ModelForm):
         self.fields['quantity'].widget.attrs.update({'class': 'form-control quantity-input'})
 
 
-OrderItemFormSet = formset_factory(OrderItemForm, extra=6)
+OrderItemFormSet = formset_factory(OrderItemForm, extra=4)
