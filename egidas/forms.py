@@ -42,7 +42,12 @@ class UserOrderCreateForm(forms.ModelForm):
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
-        fields = ['ticket', 'quantity', ]
+        fields = ['ticket', 'quantity']
+
+    def __init__(self, *args, **kwargs):
+        super(OrderItemForm, self).__init__(*args, **kwargs)
+        self.fields['ticket'].widget.attrs.update({'class': 'form-control'})
+        self.fields['quantity'].widget.attrs.update({'class': 'form-control quantity-input'})
 
 
 OrderItemFormSet = formset_factory(OrderItemForm, extra=3)

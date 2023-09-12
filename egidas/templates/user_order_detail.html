@@ -19,21 +19,21 @@
     <table class="table table-striped">
         <thead>
         <tr>
+            <th>ID</th>
             <th>Bilietas</th>
-            <th>Kiekis</th>
-            <th>Galioja iki</th>
+            <th>Kaina:</th>
             <th>Statusas</th>
-            <th>Kaina</th>
+            <th>Galioja iki:</th>
         </tr>
         </thead>
         <tbody>
-        {% for item in order.order_items.all %}
+        {% for ticket_copy in order.ticket_copies.all %}
             <tr>
-                <td>{{ item.ticket }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.ticket_copy.due_to }}</td>
-                <td><span class="status-{{ item.ticket_copy.status|lower }}">{{ item.ticket_copy.get_status_display }}</span></td>
-                <td>{{ item.get_total_price }}</td>
+                <td>{{ ticket_copy.id }}</td>
+                <td>{{ ticket_copy.ticket.service }}</td>
+                <td>{{ ticket_copy.ticket.price }} Eur</td>
+                <td><span class="status-{{ ticket_copy.status|lower }}">{{ ticket_copy.get_status_display }}</span></td>
+                <td>{{ ticket_copy.due_to }}</td>
             </tr>
         {% endfor %}
         </tbody>

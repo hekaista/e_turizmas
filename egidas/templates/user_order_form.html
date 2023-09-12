@@ -6,16 +6,21 @@
     <form method="POST">
         {% csrf_token %}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Naujas užsakymas</legend>
+            <legend class="border-bottom mb-4"><strong>Naujas užsakymas</strong></legend>
             {{ form|crispy }}
         </fieldset>
         <hr>
         {{ formset.management_form }}
         <div id="form-set">
             {% for subform in formset %}
-            <div class="form-group">
-                {{ subform|crispy }}
-            </div>
+                <div class="form-row">
+                    <div class="form-group col-md-10">
+                        {{ subform.ticket|as_crispy_field }}
+                    </div>
+                    <div class="form-group col-md-2">
+                        {{ subform.quantity|as_crispy_field }}
+                    </div>
+                </div>
             {% endfor %}
         </div>
 
@@ -29,4 +34,13 @@
         </div>
     </form>
 </div>
+
+{% block extra_css %}
+    <style>
+
+        .quantity-input {
+            width: 70px;
+        }
+    </style>
+{% endblock extra_css %}
 {% endblock content %}
